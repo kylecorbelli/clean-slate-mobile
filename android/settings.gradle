@@ -1,0 +1,3 @@
+rootProject.name = 'CleanSlateMobile'
+
+include ':app'
