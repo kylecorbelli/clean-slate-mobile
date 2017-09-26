@@ -4,13 +4,15 @@ import {
   Text,
   View,
 } from 'react-native'
-
+import {
+  blue3,
+} from '../styles/shared'
 
 export default class RegisterScreen extends Component {
   render () {
     return (
       <View style={styles.screen}>
-        <Text style={styles.headline}>Register Screen</Text>
+        <Text style={styles.title}>Register</Text>
       </View>
     )
   }
@@ -19,11 +21,13 @@ export default class RegisterScreen extends Component {
 const styles = StyleSheet.create({
   screen: {
     alignItems: 'center',
+    backgroundColor: blue3,
     display: 'flex',
     flex: 1,
     justifyContent: 'center',
   },
-  headline: {
+  title: {
+    color: 'white',
     fontSize: 36,
   },
 })

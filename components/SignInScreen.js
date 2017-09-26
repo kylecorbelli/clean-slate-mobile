@@ -5,6 +5,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
+import {
+  blue1,
+  blue3,
+  yellow2,
+} from '../styles/shared'
 
 export default class HomeScreen extends Component {
   constructor (props) {
@@ -29,9 +34,9 @@ export default class HomeScreen extends Component {
     return (
       <View style={styles.screen}>
         <View style={styles.content}>
-          <Text style={styles.headline}>Sign In Screen</Text>
-          <TouchableOpacity onPress={this.navigateToRoute('Lists')}>
-            <Text>Successful sign in</Text>
+          <Text style={styles.title}>Sign In</Text>
+          <TouchableOpacity style={styles.signInButton} onPress={this.navigateToRoute('Lists')}>
+            <Text style={styles.signInText}>Successful sign in</Text>
           </TouchableOpacity>
         </View>
         <TouchableOpacity style={styles.closeButton} onPress={this.navigateBack}>
@@ -59,7 +64,7 @@ const styles = StyleSheet.create({
   },
   screen: {
     alignItems: 'center',
-    backgroundColor: '#6dd8ff',
+    backgroundColor: blue3,
     display: 'flex',
     flex: 1,
     justifyContent: 'center',
@@ -71,8 +76,21 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
-  headline: {
+  title: {
     color: 'white',
     fontSize: 36,
+  },
+  signInButton: {
+    alignItems: 'center',
+    backgroundColor: blue1,
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: 20,
+    padding: 10,
+    width: '80%',
+  },
+  signInText: {
+    color: 'white',
+    fontSize: 18,
   },
 })
