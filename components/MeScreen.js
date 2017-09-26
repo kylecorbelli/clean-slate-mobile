@@ -10,12 +10,7 @@ import {
 } from '../styles/shared'
 
 export default class MeScreen extends Component {
-  constructor (props) {
-    super(props)
-    this.navigateToRoute = this.navigateToRoute.bind(this)
-  }
-
-  navigateToRoute (route) {
+  navigateToRoute = (route) => {
     const { navigation } = this.props
     return (event) => {
       navigation.navigate(route)

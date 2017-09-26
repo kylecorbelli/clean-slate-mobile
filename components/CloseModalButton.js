@@ -7,12 +7,7 @@ import {
 import { Icon } from 'react-native-elements'
 
 export default class CloseModalButton extends Component {
-  constructor (props) {
-    super(props)
-    this.navigateBack = this.navigateBack.bind(this)
-  }
-
-  navigateBack () {
+  navigateBack = () => {
     const { navigation } = this.props
     navigation.goBack()
   }
