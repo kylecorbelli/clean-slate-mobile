@@ -2,14 +2,16 @@ import React, { Component } from 'react'
 import {
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native'
 import {
   blue1,
   blue3,
-  yellow2,
+  blue5,
 } from '../styles/shared'
+import CloseModalButton from './CloseModalButton'
 
 export default class HomeScreen extends Component {
   constructor (props) {
@@ -31,37 +33,25 @@ export default class HomeScreen extends Component {
   }
 
   render () {
+    const { navigation } = this.props
     return (
       <View style={styles.screen}>
         <View style={styles.content}>
-          <Text style={styles.title}>Sign In</Text>
+          <View style={styles.form}>
+            <TextInput style={styles.textInput} autoCapitalize="none" autoCorrect={false} keyboardType="email-address" placeholder="Email" />
+            <TextInput style={[ styles.textInput, styles.passwordTextInput ]} autoCapitalize="none" autoCorrect={false} secureTextEntry={true} placeholder="Password" />
+          </View>
           <TouchableOpacity style={styles.signInButton} onPress={this.navigateToRoute('Lists')}>
-            <Text style={styles.signInText}>Successful sign in</Text>
+            <Text style={styles.signInText}>Sign In</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.closeButton} onPress={this.navigateBack}>
-          <Text style={styles.closeX}>X</Text>
-        </TouchableOpacity>
+        <CloseModalButton navigation={navigation} />
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  closeButton: {
-    alignItems: 'center',
-    display: 'flex',
-    flex: 1,
-    justifyContent: 'center',
-    padding: 5,
-    position: 'absolute',
-    right: 10,
-    top: 10,
-  },
-  closeX: {
-    color: 'white',
-    fontSize: 36,
-  },
   screen: {
     alignItems: 'center',
     backgroundColor: blue3,
@@ -76,13 +66,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
   },
-  title: {
-    color: 'white',
-    fontSize: 36,
+  form: {
+    backgroundColor: 'white',
+    width: '80%',
+  },
+  textInput: {
+    padding: 10,
+  },
+  passwordTextInput: {
+    borderTopColor: blue3,
+    borderTopWidth: 1,
   },
   signInButton: {
     alignItems: 'center',
-    backgroundColor: blue1,
+    backgroundColor: 'transparent',
+    borderColor: 'white',
+    borderWidth: 1,
     display: 'flex',
     justifyContent: 'center',
     marginTop: 20,
