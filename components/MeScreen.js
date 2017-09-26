@@ -5,7 +5,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native'
-
+import {
+  blue3,
+} from '../styles/shared'
 
 export default class MeScreen extends Component {
   constructor (props) {
@@ -35,11 +37,13 @@ export default class MeScreen extends Component {
 const styles = StyleSheet.create({
   screen: {
     alignItems: 'center',
+    backgroundColor: blue3,
     display: 'flex',
     flex: 1,
     justifyContent: 'center',
   },
   headline: {
+    color: 'white',
     fontSize: 36,
   },
 })
