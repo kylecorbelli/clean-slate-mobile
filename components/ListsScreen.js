@@ -21,13 +21,13 @@ export default class ListsScreen extends Component {
 const styles = StyleSheet.create({
   screen: {
     alignItems: 'center',
-    backgroundColor: blue3,
+    backgroundColor: 'white',
     display: 'flex',
     flex: 1,
     justifyContent: 'center',
   },
   title: {
-    color: 'white',
+    color: blue3,
     fontSize: 36,
   },
 })

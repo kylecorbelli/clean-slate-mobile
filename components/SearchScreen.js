@@ -21,13 +21,13 @@ export default class SearchScreen extends Component {
 const styles = StyleSheet.create({
   screen: {
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: blue3,
     display: 'flex',
     flex: 1,
     justifyContent: 'center',
   },
   headline: {
-    color: blue3,
+    color: 'white',
     fontSize: 36,
   },
 })
