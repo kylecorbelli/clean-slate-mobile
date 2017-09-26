@@ -7,12 +7,15 @@ import {
 import {
   blue3,
 } from '../styles/shared'
+import CloseModalButton from './CloseModalButton'
 
 export default class RegisterScreen extends Component {
   render () {
+    const { navigation } = this.props
     return (
       <View style={styles.screen}>
         <Text style={styles.title}>Register</Text>
+        <CloseModalButton navigation={navigation} />
       </View>
     )
   }
