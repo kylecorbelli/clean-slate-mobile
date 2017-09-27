@@ -30,6 +30,11 @@ export default class RegisterScreen extends Component {
   }
 
   submitForm = () => {
+    const { updateName } = this.props
+    const { firstName } = this.state
+    if (Boolean(firstName)) {
+      updateName(firstName)
+    }
     this.navigateToRoute('Lists')
   }
 

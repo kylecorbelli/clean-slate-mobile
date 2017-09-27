@@ -13,7 +13,7 @@ import {
 import HomeScreen from './components/HomeScreen'
 import ListsScreen from './components/ListsScreen'
 import MeScreenConnected from './containers/MeScreenConnected'
-import RegisterScreen from './components/RegisterScreen'
+import RegisterScreenConnected from './containers/RegisterScreenConnected'
 import SearchScreen from './components/SearchScreen'
 import SignInScreen from './components/SignInScreen'
 import SplashScreen from './components/SplashScreen'
@@ -26,7 +26,7 @@ const AuthRouter = StackNavigator({
     },
   },
   Register: {
-    screen: RegisterScreen,
+    screen: RegisterScreenConnected,
   },
   SignIn: {
     screen: SignInScreen,
