@@ -29,11 +29,11 @@ export default class RegisterScreen extends Component {
     this.setState({ [fieldName]: text })
   }
 
-  submitForm = () => {
-    const { updateName } = this.props
+  submitForm = async () => {
+    const { persistName } = this.props
     const { firstName } = this.state
     if (Boolean(firstName)) {
-      updateName(firstName)
+      await persistName(firstName)
     }
     this.navigateToRoute('Lists')
   }

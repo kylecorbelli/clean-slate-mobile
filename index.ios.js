@@ -3,7 +3,7 @@
  * https://github.com/facebook/react-native
  * @flow
  */
-
+import './ReactotronConfig'
 import React, { Component } from 'react';
 import { Provider } from 'react-redux'
 import {
