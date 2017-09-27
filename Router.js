@@ -12,7 +12,7 @@ import {
 
 import HomeScreen from './components/HomeScreen'
 import ListsScreen from './components/ListsScreen'
-import MeScreen from './components/MeScreen'
+import MeScreenConnected from './containers/MeScreenConnected'
 import RegisterScreen from './components/RegisterScreen'
 import SearchScreen from './components/SearchScreen'
 import SignInScreen from './components/SignInScreen'
@@ -51,7 +51,7 @@ const DashboardRouter = TabNavigator({
     },
   },
   Me: {
-    screen: MeScreen,
+    screen: MeScreenConnected,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => <Icon name="perm-identity" color={tintColor} />,
     },

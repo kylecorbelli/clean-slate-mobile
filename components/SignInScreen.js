@@ -29,7 +29,7 @@ export default class HomeScreen extends Component {
   }
 
   navigateToRoute = (route) => {
-    this.navigation.navigate(route)
+    this.props.navigation.navigate(route)
   }
 
   render () {
