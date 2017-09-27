@@ -18,9 +18,10 @@ export default class MeScreen extends Component {
   }
 
   render () {
+    const { name } = this.props
     return (
       <View style={styles.screen}>
-        <Text style={styles.headline}>Me Screen</Text>
+        <Text style={styles.headline}>{name}</Text>
         <TouchableOpacity onPress={this.navigateToRoute('Splash')}>
           <Text>Sign Out</Text>
         </TouchableOpacity>

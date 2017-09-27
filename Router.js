@@ -12,8 +12,8 @@ import {
 
 import HomeScreen from './components/HomeScreen'
 import ListsScreen from './components/ListsScreen'
-import MeScreen from './components/MeScreen'
-import RegisterScreen from './components/RegisterScreen'
+import MeScreenConnected from './containers/MeScreenConnected'
+import RegisterScreenConnected from './containers/RegisterScreenConnected'
 import SearchScreen from './components/SearchScreen'
 import SignInScreen from './components/SignInScreen'
 import SplashScreen from './components/SplashScreen'
@@ -26,7 +26,7 @@ const AuthRouter = StackNavigator({
     },
   },
   Register: {
-    screen: RegisterScreen,
+    screen: RegisterScreenConnected,
   },
   SignIn: {
     screen: SignInScreen,
@@ -51,7 +51,7 @@ const DashboardRouter = TabNavigator({
     },
   },
   Me: {
-    screen: MeScreen,
+    screen: MeScreenConnected,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => <Icon name="perm-identity" color={tintColor} />,
     },
