@@ -1,9 +1,10 @@
 const initialState = {
-  name: 'Scroopy Noopers',
+  hasSplashScreenBeenShown: false,
   reduxTokenAuth: {
     currentUser: {
       isLoading: false,
       isSignedIn: false,
+      hasVerificationBeenAttempted: false,
       attributes: {
         firstName: null,
       },

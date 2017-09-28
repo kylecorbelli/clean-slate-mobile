@@ -35,7 +35,7 @@ export default class HomeScreen extends Component {
     const { email, password } = this.state
     try {
       await signInUser({ email, password })
-      this.navigateToRoute('Lists')
+      this.navigateToRoute('Dashboard')
     } catch (error) {
       Alert.alert(
         'Error Signing In',
@@ -53,7 +53,7 @@ export default class HomeScreen extends Component {
       <View style={styles.screen}>
         <View style={styles.centeredContainer}>
           <View style={styles.authForm}>
-            <TextInput style={styles.textInput} autoFocus={true} autoCapitalize="none" autoCorrect={false} keyboardType="email-address" placeholder="Email" onChangeText={this.updateFormField('email')} />
+            <TextInput style={styles.textInput} autoCapitalize="none" autoCorrect={false} keyboardType="email-address" placeholder="Email" onChangeText={this.updateFormField('email')} />
             <TextInput style={[ styles.textInput, styles.textInputBorderTop ]} autoCapitalize="none" autoCorrect={false} secureTextEntry={true} placeholder="Password" onChangeText={this.updateFormField('password')} />
           </View>
           <TouchableOpacity style={styles.authButton} onPress={this.submitForm}>
@@ -61,7 +61,6 @@ export default class HomeScreen extends Component {
           </TouchableOpacity>
         </View>
         <View style={styles.centeredContainer}></View>
-        <CloseModalButton navigation={this.props.navigation} />
       </View>
     )
   }

@@ -1,8 +1,8 @@
 import { connect } from 'react-redux'
 import RegisterScreen from '../components/RegisterScreen'
-import { updateName } from '../redux/actions'
+import { registerUser } from '../redux-token-auth-config'
 
 export default connect(
   null,
-  { updateName },
+  { registerUser },
 )(RegisterScreen)

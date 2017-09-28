@@ -10,31 +10,37 @@ import {
   blue1,
 } from './styles/shared'
 
-import HomeScreen from './components/HomeScreen'
 import ListsScreen from './components/ListsScreen'
 import MeScreenConnected from './containers/MeScreenConnected'
 import RegisterScreenConnected from './containers/RegisterScreenConnected'
 import SearchScreen from './components/SearchScreen'
 import SignInScreenConnected from './containers/SignInScreenConnected'
-import SplashScreen from './components/SplashScreen'
+import SplashScreenConnected from './containers/SplashScreenConnected'
 
-const AuthRouter = StackNavigator({
-  Splash: {
-    screen: SplashScreen,
-    navigationOptions: {
-      gesturesEnabled: false,
-    },
-  },
+const AuthRouter = TabNavigator({
   Register: {
     screen: RegisterScreenConnected,
+    navigationOptions: {
+      tabBarIcon: ({ tintColor }) => <Icon name="user-plus" type="font-awesome" color={tintColor} />,
+    },
   },
   SignIn: {
     screen: SignInScreenConnected,
+    navigationOptions: {
+      tabBarIcon: ({ tintColor }) => <Icon name="sign-in" type="font-awesome" color={tintColor} />,
+      tabBarLabel: 'Sign In',
+    },
   },
 }, {
-  headerMode: 'none',
-  initialRouteName: 'Splash',
-  mode: 'modal',
+  animationEnabled: true,
+  initialRouteName: 'SignIn',
+  swipeEnabled: true,
+  tabBarOptions: {
+    activeTintColor: blue1,
+    style: {
+      backgroundColor: 'white',
+    },
+  },
 })
 
 const DashboardRouter = TabNavigator({
@@ -57,6 +63,8 @@ const DashboardRouter = TabNavigator({
     },
   },
 }, {
+  animationEnabled: true,
+  initialRouteName: 'Lists',
   swipeEnabled: true,
   tabBarOptions: {
     activeTintColor: blue1,
@@ -67,14 +75,17 @@ const DashboardRouter = TabNavigator({
 })
 
 const Router = StackNavigator({
+  Splash: {
+    screen: SplashScreenConnected,
+  },
   Auth: {
     screen: AuthRouter,
-  },
-  Dashboard: {
-    screen: DashboardRouter,
     navigationOptions: {
       gesturesEnabled: false,
     },
+  },
+  Dashboard: {
+    screen: DashboardRouter,
   },
 }, {
   headerMode: 'none',
