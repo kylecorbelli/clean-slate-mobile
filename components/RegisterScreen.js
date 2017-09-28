@@ -38,7 +38,6 @@ export default class RegisterScreen extends Component {
       await registerUser({ firstName, email, password, passwordConfirmation })
       this.navigateToRoute('Lists')      
     } catch (error) {
-      console.error(error)
       Alert.alert(
         'Error Registering',
         'Looks like there was an error registering. Please try again.',

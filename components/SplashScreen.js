@@ -46,11 +46,7 @@ export default class SplashScreen extends Component {
   render () {
     return (
       <View style={styles.screen}>
-        <View style={[ centeredContainer, styles.branding ]}>
-          <Text style={styles.title}>Clean Slate</Text>
-          <Text style={styles.subtitle}>Clear Your Mind</Text>
-        </View>
-        <ActivityIndicator style={centeredContainer} color="white" size="large"/>
+        <ActivityIndicator color="white" size="large"/>
       </View>
     )
   }
@@ -62,19 +58,5 @@ const styles = StyleSheet.create({
     backgroundColor: blue3,
     height: '100%',
     justifyContent: 'space-around',
-  },
-  branding: {
-    justifyContent: 'flex-end',
-  },
-  title: {
-    color: 'white',
-    fontSize: 36,
-    textAlign: 'center',
-  },
-  subtitle: {
-    color: yellow4,
-    fontSize: 18,
-    letterSpacing: 3,
-    textAlign: 'center',
   },
 })
