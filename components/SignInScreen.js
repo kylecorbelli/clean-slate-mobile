@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -20,12 +21,27 @@ import {
 import CloseModalButton from './CloseModalButton'
 
 export default class HomeScreen extends Component {
+  state = {
+    email: '',
+    password: '',
+  }
+
   updateFormField = fieldName => text => {
     this.setState({ [fieldName]: text })
   }
 
-  submitForm = () => {
-    this.navigateToRoute('Lists')
+  submitForm = async () => {
+    const { signInUser } = this.props
+    const { email, password } = this.state
+    try {
+      await signInUser({ email, password })
+      this.navigateToRoute('Lists')
+    } catch (error) {
+      Alert.alert(
+        'Error Signing In',
+        'Looks like there was an error signing you in',
+      )
+    }
   }
 
   navigateToRoute = (route) => {
