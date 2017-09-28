@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -11,9 +12,19 @@ import {
 
 export default class MeScreen extends Component {
   navigateToRoute = (route) => {
-    const { navigation } = this.props
-    return (event) => {
-      navigation.navigate(route)
+    this.props.navigation.navigate(route)
+  }
+  
+  signOut = async () => {
+    const { signOutUser } = this.props
+    try {
+      await signOutUser()
+      this.navigateToRoute('Splash')
+    } catch (error) {
+      Alert.alert(
+        'Error Signing Out',
+        'Looks like there was an error signing you out!',
+      )
     }
   }
 
@@ -22,7 +33,7 @@ export default class MeScreen extends Component {
     return (
       <View style={styles.screen}>
         <Text style={styles.headline}>{name}</Text>
-        <TouchableOpacity onPress={this.navigateToRoute('Splash')}>
+        <TouchableOpacity onPress={this.signOut}>
           <Text>Sign Out</Text>
         </TouchableOpacity>
       </View>

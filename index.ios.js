@@ -13,8 +13,11 @@ import {
 } from 'react-native';
 import configureStore from './redux/configure-store'
 import Router from './Router'
+import { verifyCredentials } from './redux-token-auth-config'
 
 const store = configureStore()
+
+verifyCredentials(store)
 
 export default class CleanSlateMobile extends Component {
   render() {

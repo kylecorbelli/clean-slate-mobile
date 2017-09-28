@@ -15,7 +15,7 @@ import ListsScreen from './components/ListsScreen'
 import MeScreenConnected from './containers/MeScreenConnected'
 import RegisterScreenConnected from './containers/RegisterScreenConnected'
 import SearchScreen from './components/SearchScreen'
-import SignInScreen from './components/SignInScreen'
+import SignInScreenConnected from './containers/SignInScreenConnected'
 import SplashScreen from './components/SplashScreen'
 
 const AuthRouter = StackNavigator({
@@ -29,7 +29,7 @@ const AuthRouter = StackNavigator({
     screen: RegisterScreenConnected,
   },
   SignIn: {
-    screen: SignInScreen,
+    screen: SignInScreenConnected,
   },
 }, {
   headerMode: 'none',
