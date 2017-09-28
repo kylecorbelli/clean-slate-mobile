@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -10,12 +11,13 @@ import {
   authButton,
   authCta,
   authForm,
-  blue3,
+  blue2,
   centeredContainer,
   textInput,
   textInputBorderTop,
 } from '../styles/shared'
 import CloseModalButton from './CloseModalButton'
+import { registerUser } from '../redux-token-auth-config'
 
 export default class RegisterScreen extends Component {
   state = {
@@ -29,13 +31,19 @@ export default class RegisterScreen extends Component {
     this.setState({ [fieldName]: text })
   }
 
-  submitForm = () => {
-    const { updateName } = this.props
-    const { firstName } = this.state
-    if (Boolean(firstName)) {
-      updateName(firstName)
+  submitForm = async () => {
+    const { registerUser } = this.props
+    const { firstName, email, password, passwordConfirmation } = this.state
+    try {
+      await registerUser({ firstName, email, password, passwordConfirmation })
+      this.navigateToRoute('Lists')      
+    } catch (error) {
+      console.error(error)
+      Alert.alert(
+        'Error Registering',
+        'Looks like there was an error registering. Please try again.',
+      )
     }
-    this.navigateToRoute('Lists')
   }
 
   navigateToRoute = (path) => {
@@ -49,7 +57,7 @@ export default class RegisterScreen extends Component {
       <View style={styles.screen}>
         <View style={styles.centeredContainer}>
           <View style={styles.authForm}>
-            <TextInput style={styles.textInput} autoFocus={true} autoCapitalize="words" autoCorrect={false} placeholder="First Name" onChangeText={this.updateFormField('firstName')} />
+            <TextInput style={styles.textInput} autoCapitalize="words" autoCorrect={false} placeholder="First Name" onChangeText={this.updateFormField('firstName')} />
             <TextInput style={[ styles.textInput, styles.textInputBorderTop ]} autoCapitalize="none" autoCorrect={false} keyboardType="email-address" placeholder="Email" onChangeText={this.updateFormField('email')} />
             <TextInput style={[ styles.textInput, styles.textInputBorderTop ]} autoCapitalize="none" autoCorrect={false} secureTextEntry={true} placeholder="Password" onChangeText={this.updateFormField('password')} />
             <TextInput style={[ styles.textInput, styles.textInputBorderTop ]} autoCapitalize="none" autoCorrect={false} secureTextEntry={true} placeholder="Password Confirmation" onChangeText={this.updateFormField('passwordConfirmation')} />
@@ -59,7 +67,6 @@ export default class RegisterScreen extends Component {
           </TouchableOpacity>
         </View>
         <View style={styles.centeredContainer}></View>
-        <CloseModalButton navigation={navigation} />
       </View>
     )
   }
@@ -72,7 +79,7 @@ const styles = StyleSheet.create({
   centeredContainer,
   screen: {
     alignItems: 'center',
-    backgroundColor: blue3,
+    backgroundColor: blue2,
     display: 'flex',
     flex: 1,
     justifyContent: 'center',

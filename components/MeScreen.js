@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native'
 import {
+  authButton,
+  authCta,
   blue3,
 } from '../styles/shared'
 
@@ -19,7 +21,7 @@ export default class MeScreen extends Component {
     const { signOutUser } = this.props
     try {
       await signOutUser()
-      this.navigateToRoute('Splash')
+      this.navigateToRoute('Auth')
     } catch (error) {
       Alert.alert(
         'Error Signing Out',
@@ -33,8 +35,8 @@ export default class MeScreen extends Component {
     return (
       <View style={styles.screen}>
         <Text style={styles.headline}>{name}</Text>
-        <TouchableOpacity onPress={this.signOut}>
-          <Text>Sign Out</Text>
+        <TouchableOpacity style={[ authButton, styles.button ]} onPress={this.signOut}>
+          <Text style={authCta}>Sign Out</Text>
         </TouchableOpacity>
       </View>
     )
@@ -48,6 +50,9 @@ const styles = StyleSheet.create({
     display: 'flex',
     flex: 1,
     justifyContent: 'center',
+  },
+  button: {
+    width: '80%',
   },
   headline: {
     color: 'white',

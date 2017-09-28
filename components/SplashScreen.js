@@ -1,88 +1,80 @@
 import React, { Component } from 'react'
 import {
-  Button,
+  ActivityIndicator,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native'
 import {
   blue3,
+  centeredContainer,
+  yellow4,
 } from '../styles/shared'
 
 export default class SplashScreen extends Component {
-  navigateToRoute = (route) => {
-    const { navigation } = this.props
-    return (event) => {
-      navigation.navigate(route)
+  state = {
+    timer: 0,
+  }
+
+  componentDidMount = () => {
+    setTimeout(() => {
+      this.setState({
+        timer: 2000,
+      })
+    }, 2000)
+  }
+
+  shouldComponentUpdate = (nextProps) => {
+    return !nextProps.hasSplashScreenBeenShown
+  }
+
+  componentWillUpdate = (nextProps, nextState) => {
+    const {
+      hasVerificationBeenAttempted,
+      isCurrentUserSignedIn,
+      navigation,
+      setHasSplashScreenBeenShown,
+    } = nextProps
+    const { timer } = nextState
+    if (hasVerificationBeenAttempted && timer === 2000) {
+      const nextRoute = isCurrentUserSignedIn ? 'Lists' : 'SignIn'
+      setHasSplashScreenBeenShown(true)
+      navigation.navigate(nextRoute)
     }
   }
 
   render () {
     return (
       <View style={styles.screen}>
-        <View style={styles.branding}>
+        <View style={[ centeredContainer, styles.branding ]}>
           <Text style={styles.title}>Clean Slate</Text>
-          <Text style={styles.subtitle}>clear your mind</Text>
+          <Text style={styles.subtitle}>Clear Your Mind</Text>
         </View>
-        <View style={styles.authOptions}>
-          <TouchableOpacity style={[ styles.button, styles.registerButton ]} onPress={this.navigateToRoute('Register')}>
-            <Text style={[ styles.ctaText, styles.registerText ]}>Register</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[ styles.button, styles.signInButton ]} onPress={this.navigateToRoute('SignIn')}>
-            <Text style={[ styles.ctaText, styles.signInText ]}>Sign In</Text>
-          </TouchableOpacity>
-        </View>
+        <ActivityIndicator style={centeredContainer} color="white" size="large"/>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  authOptions: {
-    display: 'flex',
-    flex: 1,
-    justifyContent: 'center',
-    width: '80%',
-  },
-  branding: {
-    alignItems: 'center',
-    display: 'flex',
-    flex: 5,
-    justifyContent: 'center',
-    width: '100%',
-  },
   screen: {
     alignItems: 'center',
-    backgroundColor: 'white',
-    display: 'flex',
-    flex: 1,
-    justifyContent: 'center',
+    backgroundColor: blue3,
+    height: '100%',
+    justifyContent: 'space-around',
+  },
+  branding: {
+    justifyContent: 'flex-end',
   },
   title: {
-    color: blue3,
+    color: 'white',
     fontSize: 36,
+    textAlign: 'center',
   },
   subtitle: {
+    color: yellow4,
     fontSize: 18,
-    letterSpacing: 3.5,
-  },
-  button: {
-    alignItems: 'center',
-    display: 'flex',
-    justifyContent: 'center',
-    padding: 10,
-  },
-  registerButton: {
-    backgroundColor: blue3,
-  },
-  ctaText: {
-    fontSize: 18,
-  },
-  registerText: {
-    color: 'white',
-  },
-  signInText: {
-    color: blue3,
+    letterSpacing: 3,
+    textAlign: 'center',
   },
 })

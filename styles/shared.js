@@ -49,7 +49,6 @@ export const authCta = {
 
 export const centeredContainer = {
   alignItems: 'center',
-  display: 'flex',
   flex: 1,
   justifyContent: 'center',
   width: '80%',
