@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { graphql } from '../../services/graphql'
 import {
   FETCH_LISTS_AND_TASKS_REQUEST_SENT,
   FETCH_LISTS_AND_TASKS_REQUEST_SUCCEEDED,
@@ -12,8 +12,6 @@ export const setHasSplashScreenBeenShown = (hasSplashScreenBeenShown) => ({
     hasSplashScreenBeenShown,
   },
 })
-
-// TEST ALL OF THIS, DUMMY!
 
 export const fetchListsAndTasksRequestSent = () => ({
   type: FETCH_LISTS_AND_TASKS_REQUEST_SENT,
@@ -34,27 +32,23 @@ export const fetchListsAndTasksRequestSucceeded = ({ listsById, tasksById }) => 
 export const fetchListsAndTasks = () => async (dispatch) => {
   dispatch(fetchListsAndTasksRequestSent())
   try {
-    const response = await axios({
-      method: 'POST',
-      url: 'https://blueberry-pudding-19740.herokuapp.com/graphql',
-      data: {
-        query: `
-          query {
-            lists {
-              id
-              title
-              tasks {
-                id
-              }
-            }
+    const response = await graphql({
+      query: `
+        query {
+          lists {
+            id
+            title
             tasks {
               id
-              description
-              isDone
             }
           }
-        `,
-      },
+          tasks {
+            id
+            description
+            isDone
+          }
+        }
+      `,
     })
     const listsById = response.data.data.lists.reduce(
       (cumulativeLists, currentList) => {
