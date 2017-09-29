@@ -16,6 +16,10 @@ export default class ListsScreen extends Component {
     navigation.navigate('List', { list })
   }
 
+  componentDidMount = () => {
+    this.props.fetchListsAndTasks()
+  }
+
   render () {
     const { lists } = this.props
     return (
