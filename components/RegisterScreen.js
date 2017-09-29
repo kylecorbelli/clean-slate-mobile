@@ -8,9 +8,9 @@ import {
   View,
 } from 'react-native'
 import {
-  authButton,
-  authCta,
-  authForm,
+  button,
+  ctaText,
+  form,
   blue2,
   centeredContainer,
   textInput,
@@ -55,14 +55,14 @@ export default class RegisterScreen extends Component {
     return (
       <View style={styles.screen}>
         <View style={styles.centeredContainer}>
-          <View style={styles.authForm}>
+          <View style={styles.form}>
             <TextInput style={styles.textInput} autoCapitalize="words" autoCorrect={false} placeholder="First Name" onChangeText={this.updateFormField('firstName')} />
             <TextInput style={[ styles.textInput, styles.textInputBorderTop ]} autoCapitalize="none" autoCorrect={false} keyboardType="email-address" placeholder="Email" onChangeText={this.updateFormField('email')} />
             <TextInput style={[ styles.textInput, styles.textInputBorderTop ]} autoCapitalize="none" autoCorrect={false} secureTextEntry={true} placeholder="Password" onChangeText={this.updateFormField('password')} />
             <TextInput style={[ styles.textInput, styles.textInputBorderTop ]} autoCapitalize="none" autoCorrect={false} secureTextEntry={true} placeholder="Password Confirmation" onChangeText={this.updateFormField('passwordConfirmation')} />
           </View>
-          <TouchableOpacity style={styles.authButton} onPress={this.submitForm}>
-            <Text style={styles.authCta}>Register</Text>
+          <TouchableOpacity style={styles.button} onPress={this.submitForm}>
+            <Text style={styles.ctaText}>Register</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.centeredContainer}></View>
@@ -72,9 +72,9 @@ export default class RegisterScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  authButton,
-  authCta,
-  authForm,
+  button,
+  ctaText,
+  form,
   centeredContainer,
   screen: {
     alignItems: 'center',

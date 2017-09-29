@@ -16,7 +16,7 @@ export const red3 = '#FF8167'
 export const red4 = '#FFA794'
 export const red5 = '#FFD9D1'
 
-export const authForm = {
+export const form = {
   backgroundColor: 'white',
   width: '100%',
 }
@@ -30,7 +30,7 @@ export const textInputBorderTop = {
   borderTopWidth: 1,
 }
 
-export const authButton = {
+export const button = {
   alignItems: 'center',
   backgroundColor: 'transparent',
   borderColor: 'white',
@@ -42,7 +42,7 @@ export const authButton = {
   width: '100%',
 }
 
-export const authCta = {
+export const ctaText = {
   color: 'white',
   fontSize: 18,
 }

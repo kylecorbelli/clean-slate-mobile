@@ -7,8 +7,8 @@ import {
   View,
 } from 'react-native'
 import {
-  authButton,
-  authCta,
+  button,
+  ctaText,
   blue3,
 } from '../styles/shared'
 
@@ -35,8 +35,8 @@ export default class MeScreen extends Component {
     return (
       <View style={styles.screen}>
         <Text style={styles.headline}>{name}</Text>
-        <TouchableOpacity style={[ authButton, styles.button ]} onPress={this.signOut}>
-          <Text style={authCta}>Sign Out</Text>
+        <TouchableOpacity style={[ button, styles.button ]} onPress={this.signOut}>
+          <Text style={ctaText}>Sign Out</Text>
         </TouchableOpacity>
       </View>
     )
