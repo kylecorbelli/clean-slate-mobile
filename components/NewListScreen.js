@@ -35,11 +35,7 @@ export default class NewListScreen extends Component {
 
   createNewList = async () => {
     const { createList, navigation } = this.props
-    const rawList = await createList(this.state.title)
-    const list = {
-      ...rawList,
-      tasks: [],
-    }
+    const list = await createList(this.state.title)
     navigation.navigate('List', { listId: list.id, title: list.title })
   }
 
