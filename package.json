@@ -25,6 +25,9 @@
 		"react-test-renderer": "16.0.0-alpha.12"
 	},
 	"jest": {
-		"preset": "react-native"
+		"preset": "react-native",
+		"transformIgnorePatterns": [
+			"node_modules/(?!(react-native|react-native-elements|react-native-vector-icons|react-native-tab-navigator|react-navigation)/)"
+		]		
 	}
 }
