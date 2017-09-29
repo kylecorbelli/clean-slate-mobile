@@ -1,21 +1,26 @@
 import React from 'react'
+import { StyleSheet } from 'react-native'
 import {
   StackNavigator,
   TabNavigator,
 } from 'react-navigation'
-import {
-  Icon,
-} from 'react-native-elements'
+import { Icon } from 'react-native-elements'
 import {
   blue1,
 } from './styles/shared'
 
-import ListsScreen from './components/ListsScreen'
+import ListsScreenConnected from './containers/ListsScreenConnected'
+import ListScreen from './components/ListScreen'
+import TaskScreen from './components/TaskScreen'
 import MeScreenConnected from './containers/MeScreenConnected'
 import RegisterScreenConnected from './containers/RegisterScreenConnected'
 import SearchScreen from './components/SearchScreen'
 import SignInScreenConnected from './containers/SignInScreenConnected'
 import SplashScreenConnected from './containers/SplashScreenConnected'
+import BackButton from './components/BackButton'
+import NavbarAddButton from './components/NavbarAddButton'
+import NewListScreen from './components/NewListScreen'
+import NewTaskScreen from './components/NewTaskScreen'
 
 const AuthRouter = TabNavigator({
   Register: {
@@ -32,12 +37,41 @@ const AuthRouter = TabNavigator({
     },
   },
 }, {
-  animationEnabled: true,
   initialRouteName: 'SignIn',
-  swipeEnabled: true,
   tabBarOptions: {
     activeTintColor: blue1,
     style: {
+      backgroundColor: 'white',
+    },
+  },
+})
+
+const ListsRouter = StackNavigator({
+  ListOfLists: {
+    screen: ListsScreenConnected,
+    navigationOptions: ({ navigation }) => ({
+      title: 'Lists',
+      headerRight: <NavbarAddButton onPress={() => navigation.navigate('NewList')} />,
+    }),
+  },
+  List: {
+    screen: ListScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.state.params.list.title,
+      headerLeft: <BackButton navigation={navigation} />,
+      headerRight: <NavbarAddButton onPress={() => navigation.navigate('NewTask')} />,
+    }),
+  },
+  Task: {
+    screen: TaskScreen,
+    navigationOptions: ({ navigation }) => ({
+      title: navigation.state.params.task.description,
+      headerLeft: <BackButton navigation={navigation} />,
+    }),
+  },
+}, {
+  navigationOptions: {
+    headerStyle: {
       backgroundColor: 'white',
     },
   },
@@ -51,9 +85,10 @@ const DashboardRouter = TabNavigator({
     },
   },
   Lists: {
-    screen: ListsScreen,
+    screen: ListsRouter,
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => <Icon name="list" color={tintColor} />,
+      title: 'Lists',
     },
   },
   Me: {
@@ -63,9 +98,7 @@ const DashboardRouter = TabNavigator({
     },
   },
 }, {
-  animationEnabled: true,
   initialRouteName: 'Lists',
-  swipeEnabled: true,
   tabBarOptions: {
     activeTintColor: blue1,
     style: {
@@ -74,7 +107,7 @@ const DashboardRouter = TabNavigator({
   },
 })
 
-const Router = StackNavigator({
+const ApplicationRouter = StackNavigator({
   Splash: {
     screen: SplashScreenConnected,
   },
@@ -86,9 +119,34 @@ const Router = StackNavigator({
   },
   Dashboard: {
     screen: DashboardRouter,
+    navigationOptions: {
+      gesturesEnabled: false,
+    },
   },
 }, {
   headerMode: 'none',
 })
 
+const Router = StackNavigator({
+  Application: {
+    screen: ApplicationRouter,
+  },
+  NewList: {
+    screen: NewListScreen,
+  },
+  NewTask: {
+    screen: NewTaskScreen,
+  }
+}, {
+  headerMode: 'none',
+  mode: 'modal',
+})
+
+const styles = StyleSheet.create({
+  backButton: {
+    marginLeft: 10,
+  },
+})
+
 export default Router
+

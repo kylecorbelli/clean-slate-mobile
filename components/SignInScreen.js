@@ -8,9 +8,9 @@ import {
   View,
 } from 'react-native'
 import {
-  authButton,
-  authCta,
-  authForm,
+  button,
+  ctaText,
+  form,
   blue1,
   blue3,
   blue5,
@@ -52,12 +52,12 @@ export default class HomeScreen extends Component {
     return (
       <View style={styles.screen}>
         <View style={styles.centeredContainer}>
-          <View style={styles.authForm}>
+          <View style={styles.form}>
             <TextInput style={styles.textInput} autoCapitalize="none" autoCorrect={false} keyboardType="email-address" placeholder="Email" onChangeText={this.updateFormField('email')} />
             <TextInput style={[ styles.textInput, styles.textInputBorderTop ]} autoCapitalize="none" autoCorrect={false} secureTextEntry={true} placeholder="Password" onChangeText={this.updateFormField('password')} />
           </View>
-          <TouchableOpacity style={styles.authButton} onPress={this.submitForm}>
-            <Text style={styles.authCta}>Sign In</Text>
+          <TouchableOpacity style={styles.button} onPress={this.submitForm}>
+            <Text style={styles.ctaText}>Sign In</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.centeredContainer}></View>
@@ -74,9 +74,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-  authButton,
-  authCta,
-  authForm,
+  button,
+  ctaText,
+  form,
   centeredContainer,
   textInput,
   textInputBorderTop,
