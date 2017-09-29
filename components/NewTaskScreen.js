@@ -18,13 +18,33 @@ import {
 } from '../styles/shared'
 
 export default class NewTaskScreen extends Component {
+  static propTypes = {
+    createTask: PropTypes.func.isRequired,
+  }
+
+  state = {
+    description: '',
+  }
+
+  updateFormField = fieldName => text => {
+    this.setState({ [fieldName]: text })
+  }
+
+  createNewTask = async () => {
+    const { description } = this.state
+    const { createTask, navigation } = this.props
+    const { listId } = navigation.state.params
+    await createTask(description, listId)
+    navigation.goBack()
+  }
+
   render () {
     return (
       <View style={styles.screen}>
         <View style={[ form, styles.newListForm ]}>
-          <TextInput placeholder="New Task Description" style={textInput} />
+          <TextInput autoFocus={true} placeholder="New Task Description" style={textInput} onChangeText={this.updateFormField('description')} />
         </View>
-        <TouchableOpacity style={[ button, styles.newListButton ]}>
+        <TouchableOpacity style={[ button, styles.newListButton ]} onPress={this.createNewTask}>
           <Text style={[ ctaText ]}>Add New Task</Text>
         </TouchableOpacity>
         <CloseModalButton navigation={this.props.navigation} />
