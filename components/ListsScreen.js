@@ -13,7 +13,7 @@ import {
 export default class ListsScreen extends Component {
   selectList = list => event => {
     const { navigation } = this.props
-    navigation.navigate('List', { list })
+    navigation.navigate('List', { listId: list.id, title: list.title })
   }
 
   componentDidMount = () => {

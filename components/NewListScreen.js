@@ -18,13 +18,34 @@ import {
 } from '../styles/shared'
 
 export default class NewListScreen extends Component {
+  static propTypes = {
+    createList: PropTypes.func.isRequired,
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func.isRequired,
+    }).isRequired,
+  }
+
+  state = {
+    title: '',
+  }
+
+  updateFormField = fieldName => text => {
+    this.setState({ [fieldName]: text })
+  }
+
+  createNewList = async () => {
+    const { createList, navigation } = this.props
+    const list = await createList(this.state.title)
+    navigation.navigate('List', { listId: list.id, title: list.title })
+  }
+
   render () {
     return (
       <View style={styles.screen}>
         <View style={[ form, styles.newListForm ]}>
-          <TextInput placeholder="New List Title" style={textInput} />
+          <TextInput autoFocus={true} placeholder="New List Title" style={textInput} onChangeText={this.updateFormField('title')} />
         </View>
-        <TouchableOpacity style={[ button, styles.newListButton ]}>
+        <TouchableOpacity style={[ button, styles.newListButton ]} onPress={this.createNewList}>
           <Text style={[ ctaText ]}>Add New List</Text>
         </TouchableOpacity>
         <CloseModalButton navigation={this.props.navigation} />

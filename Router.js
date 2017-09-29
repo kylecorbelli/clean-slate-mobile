@@ -10,7 +10,7 @@ import {
 } from './styles/shared'
 
 import ListsScreenConnected from './containers/ListsScreenConnected'
-import ListScreen from './components/ListScreen'
+import ListScreenConnected from './containers/ListScreenConnected'
 import TaskScreen from './components/TaskScreen'
 import MeScreenConnected from './containers/MeScreenConnected'
 import RegisterScreenConnected from './containers/RegisterScreenConnected'
@@ -19,8 +19,8 @@ import SignInScreenConnected from './containers/SignInScreenConnected'
 import SplashScreenConnected from './containers/SplashScreenConnected'
 import BackButton from './components/BackButton'
 import NavbarAddButton from './components/NavbarAddButton'
-import NewListScreen from './components/NewListScreen'
-import NewTaskScreen from './components/NewTaskScreen'
+import NewListScreenConnected from './containers/NewListScreenConnected'
+import NewTaskScreenConnected from './containers/NewTaskScreenConnected'
 
 const AuthRouter = TabNavigator({
   Register: {
@@ -55,11 +55,11 @@ const ListsRouter = StackNavigator({
     }),
   },
   List: {
-    screen: ListScreen,
+    screen: ListScreenConnected,
     navigationOptions: ({ navigation }) => ({
-      title: navigation.state.params.list.title,
+      title: navigation.state.params.title,
       headerLeft: <BackButton navigation={navigation} />,
-      headerRight: <NavbarAddButton onPress={() => navigation.navigate('NewTask')} />,
+      headerRight: <NavbarAddButton onPress={() => navigation.navigate('NewTask', { listId: navigation.state.params.listId })} />,
     }),
   },
   Task: {
@@ -132,10 +132,10 @@ const Router = StackNavigator({
     screen: ApplicationRouter,
   },
   NewList: {
-    screen: NewListScreen,
+    screen: NewListScreenConnected,
   },
   NewTask: {
-    screen: NewTaskScreen,
+    screen: NewTaskScreenConnected,
   }
 }, {
   headerMode: 'none',
