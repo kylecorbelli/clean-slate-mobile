@@ -4,16 +4,18 @@ import {
   deleteList,
   fetchListsAndTasks,
 } from '../redux/actions'
+import { byIdToArray } from '../services/utilities'
 
 const mapStateToProps = (state) => {
   const listsById = state.entities.lists.byId
   const tasksById = state.entities.tasks.byId
+  const tasks = byIdToArray(tasksById)
   return {
-    lists: Object.keys(listsById).map(id => {
-      const list = listsById[id]
+    lists: Object.keys(listsById).map(listId => {
+      const list = listsById[listId]
       return {
         ...list,
-        tasks: list.taskIds.map(taskId => tasksById[taskId])
+        tasks: tasks.filter(task => task.listId === listId)
       }
     }),
   }

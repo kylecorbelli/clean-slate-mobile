@@ -58,6 +58,9 @@ export const fetchListsAndTasks = () => async (dispatch) => {
             id
             description
             isDone
+            list {
+              id
+            }
           }
         }
       `,
@@ -78,9 +81,13 @@ export const fetchListsAndTasks = () => async (dispatch) => {
     )
     const tasksById = response.data.data.tasks.reduce(
       (cumulativeTasks, currentTask) => {
+        const { list, ...currentTaskWithoutList } = currentTask
         return {
           ...cumulativeTasks,
-          [currentTask.id]: currentTask,
+          [currentTaskWithoutList.id]: {
+            ...currentTaskWithoutList,
+            listId: list.id,
+          },
         }
       },
       {},
@@ -144,10 +151,9 @@ export const createTaskRequestFailed = () => ({
   type: CREATE_TASK_REQUEST_FAILED,
 })
 
-export const createTaskRequestSucceeded = (newTask, listId) => ({
+export const createTaskRequestSucceeded = (newTask) => ({
   type: CREATE_TASK_REQUEST_SUCCEEDED,
   payload: {
-    listId,
     newTask,
   },
 })
@@ -162,6 +168,9 @@ export const createTask = (description, listId) => async (dispatch) => {
             id
             description
             isDone
+            list {
+              id
+            }
           }
         }
       `,
@@ -170,9 +179,13 @@ export const createTask = (description, listId) => async (dispatch) => {
         listId,
       },
     })
-    const newTask = response.data.data.createTask
-    dispatch(createTaskRequestSucceeded(newTask, listId))
-    return newTask
+    const { list, ...newTask} = response.data.data.createTask
+    const newTaskWithListId = {
+      ...newTask,
+      listId,
+    }
+    dispatch(createTaskRequestSucceeded(newTaskWithListId))
+    return newTaskWithListId
   } catch (error) {
     dispatch(createTaskRequestFailed())
     throw error
