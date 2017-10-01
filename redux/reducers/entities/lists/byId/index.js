@@ -15,40 +15,10 @@ const byId = (state = {}, action) => {
         ...state,
         [newList.id]: newList,
       }
-    case CREATE_TASK_REQUEST_SUCCEEDED:
-      const {
-        listId,
-        newTask: {
-          id: newTaskId,
-        },
-      } = action.payload
-      const targetList = state[listId]
-      return {
-        ...state,
-        [listId]: {
-          ...targetList,
-          taskIds: [
-            ...targetList.taskIds,
-            newTaskId,
-          ],
-        },
-      }
     case DELETE_LIST_REQUEST_SUCCEEDED:
       const newState = cloneDeep(state)
       delete newState[action.payload.listId]
       return newState
-    case DELETE_TASK_REQUEST_SUCCEEDED:
-      const { taskId } = action.payload
-      const listContainingTask = Object.keys(state)
-        .map(listId => state[listId])
-        .find(list => list.taskIds.indexOf(taskId) !== -1)
-      return {
-        ...state,
-        [listContainingTask.id]: {
-          ...listContainingTask,
-          taskIds: listContainingTask.taskIds.filter(id => id !== taskId)
-        }
-      }
     case FETCH_LISTS_AND_TASKS_REQUEST_SUCCEEDED:
       return action.payload.listsById
     default:

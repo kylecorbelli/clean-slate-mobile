@@ -48,43 +48,6 @@ describe('lists.byId', () => {
     })
   })
 
-  describe('CREATE_TASK_REQUEST_SUCCEEDED', () => {
-    it('adds the new task’s ID to the correponsing list', () => {
-      const initialState = {
-        1: {
-          id: 1,
-          title: 'first list',
-          taskIds: [ 1, 2 ],
-        },
-        2: {
-          id: 2,
-          title: 'second list',
-          taskIds: [ 3 ],
-        },
-      }
-      const newTask = {
-        id: 4,
-        description: 'a new task',
-        isDone: false,
-      }
-      const action = createTaskRequestSucceeded(newTask, 2)
-      const expectedNewState = {
-        1: {
-          id: 1,
-          title: 'first list',
-          taskIds: [ 1, 2 ],
-        },
-        2: {
-          id: 2,
-          title: 'second list',
-          taskIds: [ 3, 4 ],
-        },
-      }
-      const newState = byId(initialState, action)
-      expect(newState).toEqual(expectedNewState)
-    })
-  })
-
   describe('DELETE_LIST_REQUEST_SUCCEEDED', () => {
     it('removes the list from lists by id', () => {
       const initialState = {
