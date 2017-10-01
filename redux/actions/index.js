@@ -6,6 +6,9 @@ import {
   CREATE_TASK_REQUEST_FAILED,
   CREATE_TASK_REQUEST_SENT,
   CREATE_TASK_REQUEST_SUCCEEDED,
+  DELETE_TASK_REQUEST_FAILED,
+  DELETE_TASK_REQUEST_SENT,
+  DELETE_TASK_REQUEST_SUCCEEDED,
   FETCH_LISTS_AND_TASKS_REQUEST_FAILED,
   FETCH_LISTS_AND_TASKS_REQUEST_SENT,
   FETCH_LISTS_AND_TASKS_REQUEST_SUCCEEDED,
@@ -169,6 +172,43 @@ export const createTask = (description, listId) => async (dispatch) => {
     return newTask
   } catch (error) {
     dispatch(createTaskRequestFailed())
+    throw error
+  }
+}
+
+export const deleteTaskRequestSent = () => ({
+  type: DELETE_TASK_REQUEST_SENT,
+})
+
+export const deleteTaskRequestFailed = () => ({
+  type: DELETE_TASK_REQUEST_FAILED,
+})
+
+export const deleteTaskRequestSucceeded = (taskId) => ({
+  type: DELETE_TASK_REQUEST_SUCCEEDED,
+  payload: {
+    taskId,
+  },
+})
+
+export const deleteTask = (taskId) => async (dispatch) => {
+  dispatch(deleteTaskRequestSent())
+  try {
+    await graphql({
+      query: `
+        mutation DeleteTask($id: ID!) {
+          deleteTask(id: $id) {
+            id
+          }
+        }
+      `,
+      variables: {
+        id: taskId,
+      },
+    })
+    dispatch(deleteTaskRequestSucceeded(taskId))
+  } catch (error) {
+    dispatch(deleteTaskRequestFailed())
     throw error
   }
 }

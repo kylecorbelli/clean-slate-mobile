@@ -3,27 +3,25 @@ import {
   createTaskRequestFailed,
   createTaskRequestSent,
   createTaskRequestSucceeded,
+  deleteTaskRequestFailed,
+  deleteTaskRequestSent,
+  deleteTaskRequestSucceeded,
   fetchListsAndTasksRequestSent,
   fetchListsAndTasksRequestFailed,
   fetchListsAndTasksRequestSucceeded,
 } from '../../../../actions'
+import { expectLoadingStateToChangeTo } from '../../../../../services/test-helpers'
 
 describe('lists.isLoading', () => {
   describe('FETCH_LISTS_AND_TASKS_REQUEST_SENT', () => {
     it('indicates that the tasks are loading', () => {
-      const initialState = false
-      const action = fetchListsAndTasksRequestSent()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(true)
+      expectLoadingStateToChangeTo(true, fetchListsAndTasksRequestSent, isLoading)
     })
   })
 
   describe('FETCH_LISTS_AND_TASKS_REQUEST_FAILED', () => {
     it('indicates that the tasks are no longer loading', () => {
-      const initialState = true
-      const action = fetchListsAndTasksRequestFailed()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(false)
+      expectLoadingStateToChangeTo(false, fetchListsAndTasksRequestFailed, isLoading)
     })
   })
 
@@ -38,28 +36,37 @@ describe('lists.isLoading', () => {
 
   describe('CREATE_TASK_REQUEST_SENT', () => {
     it('indicates that the tasks are loading', () => {
-      const initialState = false
-      const action = createTaskRequestSent()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(true)
+      expectLoadingStateToChangeTo(true, createTaskRequestSent, isLoading)
     })
   })
 
   describe('CREATE_TASK_REQUEST_FAILED', () => {
     it('indicates that the tasks are no longer loading', () => {
-      const initialState = true
-      const action = createTaskRequestFailed()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(false)
+      expectLoadingStateToChangeTo(false, createTaskRequestFailed, isLoading)
     })
   })
 
   describe('CREATE_TASK_REQUEST_SUCCEEDED', () => {
     it('indicates that the tasks are no longer loading', () => {
-      const initialState = true
-      const action = createTaskRequestSucceeded()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(false)
+      expectLoadingStateToChangeTo(false, createTaskRequestSucceeded, isLoading)
+    })
+  })
+
+  describe('DELETE_TASK_REQUEST_SENT', () => {
+    it('indicates that the tasks are loading', () => {
+      expectLoadingStateToChangeTo(true, deleteTaskRequestSent, isLoading)
+    })
+  })
+
+  describe('DELETE_TASK_REQUEST_FAILED', () => {
+    it('indicates that the tasks are no longer loading', () => {
+      expectLoadingStateToChangeTo(false, deleteTaskRequestFailed, isLoading)
+    })
+  })
+
+  describe('DELETE_TASK_REQUEST_SUCCEEDED', () => {
+    it('indicates that the tasks are no longer loading', () => {
+      expectLoadingStateToChangeTo(false, deleteTaskRequestSucceeded, isLoading)
     })
   })
 })
