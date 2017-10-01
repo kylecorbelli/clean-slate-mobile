@@ -1,6 +1,7 @@
 import byId from './index'
 import {
   createTaskRequestSucceeded,
+  deleteTaskRequestSucceeded,
   fetchListsAndTasksRequestSucceeded,
 } from '../../../../actions'
 
@@ -40,6 +41,30 @@ describe('lists.byId', () => {
         [newTask.id]: newTask,
       }
       const newState = byId(initialState, action)
+      expect(newState).toEqual(expectedNewState)
+    })
+  })
+
+  describe('DELETE_TASK_REQUEST_SUCCEEDED', () => {
+    it('removes the task from tasks by id', () => {
+      const initialState = {
+        1: {
+          id: 1,
+          description: 'first task',
+        },
+        2: {
+          id: 2,
+          description: 'a new task',
+        },
+      }
+      const action = deleteTaskRequestSucceeded(2)
+      const newState = byId(initialState, action)
+      const expectedNewState = {
+        1: {
+          id: 1,
+          description: 'first task',
+        },
+      }
       expect(newState).toEqual(expectedNewState)
     })
   })

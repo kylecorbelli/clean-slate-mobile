@@ -1,5 +1,6 @@
 import { connect } from 'react-redux'
 import ListScreen from '../components/ListScreen'
+import { deleteTask } from '../redux/actions'
 
 const mapStateToProps = (state, ownProps) => {
   const { listId } = ownProps.navigation.state.params
@@ -15,4 +16,5 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
   mapStateToProps,
+  { deleteTask },
 )(ListScreen)
