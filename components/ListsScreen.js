@@ -1,19 +1,74 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
+  Alert,
   StyleSheet,
   Text,
   View,
 } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
+import Swipeout from 'react-native-swipeout'
 import {
   blue1,
   blue3,
+  red1,
 } from '../styles/shared'
 
 export default class ListsScreen extends Component {
+  static propTypes = {
+    deleteList: PropTypes.func.isRequired,
+    fetchListsAndTasks: PropTypes.func.isRequired,
+    lists: PropTypes.array.isRequired,
+  }
+
+  state = {
+    listInFocusId: 0,
+  }
+
+  setListInFocusId = (listInFocusId) => (event) => {
+    this.setState({
+      listInFocusId,
+    })
+  }
+
   selectList = list => event => {
     const { navigation } = this.props
     navigation.navigate('List', { listId: list.id, title: list.title })
+  }
+
+  deleteListWithConfirmation = (list) => (event) => {
+    const { deleteList } = this.props
+    Alert.alert(
+      'Delete List?',
+      `You are about to delete the list "${list.title}". This action cannot be undone. Do you still wish to continue?`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {
+            this.setState({
+              listInFocusId: 0,
+            })
+          },
+        },
+        {
+          text: 'Confirm',
+          onPress: () => {
+            deleteList(list.id)
+          },
+        },
+      ],
+    )
+  }
+
+  swipeoutButtons = (list) => {
+    return [
+      {
+        autoClose: true,
+        backgroundColor: red1,
+        onPress: this.deleteListWithConfirmation(list),
+        text: 'Delete',
+      },
+    ]
   }
 
   componentDidMount = () => {
@@ -22,16 +77,24 @@ export default class ListsScreen extends Component {
 
   render () {
     const { lists } = this.props
+    const { listInFocusId } = this.state
     return (
       <List>
         {
           lists.map((list, index) => (
-            <ListItem
-              badge={{ value: list.tasks.filter(task => !task.isDone).length, containerStyle: { backgroundColor: blue1 } }}
+            <Swipeout
+              backgroundColor="transparent"
+              close={list.id !== listInFocusId}
               key={index}
-              onPress={this.selectList(list)}
-              title={list.title}
-            />
+              onOpen={this.setListInFocusId(list.id)}
+              right={this.swipeoutButtons(list)}
+            >
+              <ListItem
+                badge={{ value: list.tasks.filter(task => !task.isDone).length, containerStyle: { backgroundColor: blue1 } }}
+                onPress={this.selectList(list)}
+                title={list.title}
+              />
+            </Swipeout>
           ))
         }
       </List>
@@ -52,5 +115,3 @@ const styles = StyleSheet.create({
     fontSize: 36,
   },
 })
-
-// <Text style={styles.title}>Lists Screen</Text>

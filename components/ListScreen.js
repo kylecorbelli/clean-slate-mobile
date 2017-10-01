@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
+  Alert,
   Text,
   View,
 } from 'react-native'
@@ -25,15 +26,37 @@ export default class ListScreen extends Component {
     taskInFocusId: 0,
   }
 
+  deleteTaskWithConfirmation = (task) => (event) => {
+    const { deleteTask } = this.props
+    Alert.alert(
+      'Delete Task?',
+      `You are about to delete the task "${task.description}". This action cannot be undone. Do you still wish to continue?`,
+      [
+        {
+          text: 'Cancel',
+          onPress: () => {
+            this.setState({
+              taskInFocusId: 0,
+            })
+          }
+        },
+        {
+          text: 'Confirm',
+          onPress: () => {
+            deleteTask(task.id)
+          }
+        }
+      ],
+    )
+  }
+
   swipeoutButtons = (task) => {
     const { deleteTask } = this.props
     return [
       {
         autoClose: true,
         backgroundColor: red1,
-        onPress: () => {
-          deleteTask(task.id)
-        },
+        onPress: this.deleteTaskWithConfirmation(task),
         text: 'Delete',
       },
     ]

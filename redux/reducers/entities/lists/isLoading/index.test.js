@@ -3,27 +3,25 @@ import {
   createListRequestFailed,
   createListRequestSent,
   createListRequestSucceded,
+  deleteListRequestFailed,
+  deleteListRequestSent,
+  deleteListRequestSucceeded,
   fetchListsAndTasksRequestSent,
   fetchListsAndTasksRequestFailed,
   fetchListsAndTasksRequestSucceeded,
 } from '../../../../actions'
+import { expectLoadingStateToChangeTo } from '../../../../../services/test-helpers'
 
 describe('lists.isLoading', () => {
   describe('FETCH_LISTS_AND_TASKS_REQUEST_SENT', () => {
     it('indicates that the lists are loading', () => {
-      const initialState = false
-      const action = fetchListsAndTasksRequestSent()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(true)
+      expectLoadingStateToChangeTo(true, fetchListsAndTasksRequestSent, isLoading)
     })
   })
 
   describe('FETCH_LISTS_AND_TASKS_REQUEST_FAILED', () => {
     it('indicates that the lists are no longer loading', () => {
-      const initialState = true
-      const action = fetchListsAndTasksRequestFailed()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(false)
+      expectLoadingStateToChangeTo(false, fetchListsAndTasksRequestFailed, isLoading)
     })
   })
 
@@ -38,28 +36,37 @@ describe('lists.isLoading', () => {
 
   describe('CREATE_LIST_REQUEST_SENT', () => {
     it('indicates that the lists are loading', () => {
-      const initialState = false
-      const action = createListRequestSent()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(true)
+      expectLoadingStateToChangeTo(true, createListRequestSent, isLoading)
     })
   })
 
   describe('CREATE_LIST_REQUEST_FAILED', () => {
     it('indicates that the lists are no longer loading', () => {
-      const initialState = true
-      const action = createListRequestFailed()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(false)
+      expectLoadingStateToChangeTo(false, createListRequestFailed, isLoading)
     })
   })
 
   describe('CREATE_LIST_REQUEST_SUCCEEDED', () => {
     it('indicates that the lists are no longer loading', () => {
-      const initialState = true
-      const action = createListRequestSucceded()
-      const newState = isLoading(initialState, action)
-      expect(newState).toBe(false)
+      expectLoadingStateToChangeTo(false, createListRequestSucceded, isLoading)
+    })
+  })
+
+  describe('DELETE_LIST_REQUEST_SENT', () => {
+    it('indicates that the lists are loading', () => {
+      expectLoadingStateToChangeTo(true, deleteListRequestSent, isLoading)
+    })
+  })
+
+  describe('DELETE_LIST_REQUEST_FAILED', () => {
+    it('indicates that the lists are no longer loading', () => {
+      expectLoadingStateToChangeTo(false, deleteListRequestFailed, isLoading)
+    })
+  })
+
+  describe('DELETE_LIST_REQUEST_SUCCEDED', () => {
+    it('indicates that the lists are no longer loading', () => {
+      expectLoadingStateToChangeTo(false, deleteListRequestSucceeded, isLoading)
     })
   })
 })

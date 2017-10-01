@@ -6,6 +6,9 @@ import {
   CREATE_TASK_REQUEST_FAILED,
   CREATE_TASK_REQUEST_SENT,
   CREATE_TASK_REQUEST_SUCCEEDED,
+  DELETE_LIST_REQUEST_FAILED,
+  DELETE_LIST_REQUEST_SENT,
+  DELETE_LIST_REQUEST_SUCCEEDED,
   DELETE_TASK_REQUEST_FAILED,
   DELETE_TASK_REQUEST_SENT,
   DELETE_TASK_REQUEST_SUCCEEDED,
@@ -209,6 +212,43 @@ export const deleteTask = (taskId) => async (dispatch) => {
     dispatch(deleteTaskRequestSucceeded(taskId))
   } catch (error) {
     dispatch(deleteTaskRequestFailed())
+    throw error
+  }
+}
+
+export const deleteListRequestSent = () => ({
+  type: DELETE_LIST_REQUEST_SENT,
+})
+
+export const deleteListRequestFailed = () => ({
+  type: DELETE_LIST_REQUEST_FAILED,
+})
+
+export const deleteListRequestSucceeded = (listId) => ({
+  type: DELETE_LIST_REQUEST_SUCCEEDED,
+  payload: {
+    listId,
+  },
+})
+
+export const deleteList = (listId) => async (dispatch) => {
+  dispatch(deleteListRequestSent())
+  try {
+    await graphql({
+      query: `
+        mutation DeleteList($id: ID!) {
+          deleteList(id: $id) {
+            id
+          }
+        }
+      `,
+      variables: {
+        id: listId,
+      },
+    })
+    dispatch(deleteListRequestSucceeded(listId))
+  } catch (error) {
+    dispatch(deleteListRequestFailed())
     throw error
   }
 }
