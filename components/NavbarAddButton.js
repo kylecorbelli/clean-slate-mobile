@@ -18,6 +18,8 @@ export default class NavbarAddButton extends Component {
 const styles = StyleSheet.create({
   addButton: {
     marginRight: 10,
-    padding: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 10,
   },
 })
