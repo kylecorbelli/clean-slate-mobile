@@ -21,7 +21,7 @@ import BackButton from './components/BackButton'
 import NavbarAddButton from './components/NavbarAddButton'
 import NewListScreenConnected from './containers/NewListScreenConnected'
 import NewTaskScreenConnected from './containers/NewTaskScreenConnected'
-import CameraPage from './components/CameraPage'
+import CameraScreen from './components/CameraScreen'
 import SavingPhotoModal from './components/SavingPhotoModal'
 
 const AuthRouter = TabNavigator({
@@ -131,7 +131,7 @@ const ApplicationRouter = StackNavigator({
 
 const CameraRouter = StackNavigator({
   Camera: {
-    screen: CameraPage,
+    screen: CameraScreen,
   },
   SavingPhotoModal: {
     screen: SavingPhotoModal,

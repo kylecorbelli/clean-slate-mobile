@@ -12,7 +12,7 @@ import { defaultHitSlop } from '../constants'
 
 const { back, front } = Camera.constants.Type
 
-export default class CameraPage extends Component {
+export default class CameraScreen extends Component {
   state = {
     photoHasBeenTaken: false,
     photoPath: '',
@@ -21,14 +21,12 @@ export default class CameraPage extends Component {
 
   toggleFrontOrBackCamera = () => {
     const { deviceCamera } = this.state
-    
     this.setState({
       deviceCamera: deviceCamera === front ? back : front,
     })
   }
 
   takePicture = async () => {
-    const { navigation } = this.props
     try {
       const data = await this.camera.capture()
       this.setState({
