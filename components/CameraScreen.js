@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
   },
   photoConfirmation: {
     alignItems: 'stretch',
+    backgroundColor: 'white',
     height: '100%',
     position: 'absolute',
     width: '100%',

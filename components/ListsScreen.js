@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   Alert,
+  RefreshControl,
+  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -19,6 +21,7 @@ export default class ListsScreen extends Component {
     deleteList: PropTypes.func.isRequired,
     fetchListsAndTasks: PropTypes.func.isRequired,
     lists: PropTypes.array.isRequired,
+    listsAndTasksAreLoading: PropTypes.bool.isRequired,
   }
 
   state = {
@@ -76,28 +79,41 @@ export default class ListsScreen extends Component {
   }
 
   render () {
-    const { lists } = this.props
+    const {
+      fetchListsAndTasks,
+      lists,
+      listsAndTasksAreLoading,
+    } = this.props
     const { listInFocusId } = this.state
     return (
-      <List>
-        {
-          lists.map((list, index) => (
-            <Swipeout
-              backgroundColor="transparent"
-              close={list.id !== listInFocusId}
-              key={index}
-              onOpen={this.setListInFocusId(list.id)}
-              right={this.swipeoutButtons(list)}
-            >
-              <ListItem
-                badge={{ value: list.tasks.filter(task => !task.isDone).length, containerStyle: { backgroundColor: blue1 } }}
-                onPress={this.selectList(list)}
-                title={list.title}
-              />
-            </Swipeout>
-          ))
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={listsAndTasksAreLoading}
+            onRefresh={fetchListsAndTasks}
+          />
         }
-      </List>
+      >
+        <List>
+          {
+            lists.map((list, index) => (
+              <Swipeout
+                backgroundColor="transparent"
+                close={list.id !== listInFocusId}
+                key={index}
+                onOpen={this.setListInFocusId(list.id)}
+                right={this.swipeoutButtons(list)}
+              >
+                <ListItem
+                  badge={{ value: list.tasks.filter(task => !task.isDone).length, containerStyle: { backgroundColor: blue1 } }}
+                  onPress={this.selectList(list)}
+                  title={list.title}
+                />
+              </Swipeout>
+            ))
+          }
+        </List>
+      </ScrollView>
     )
   }
 }

@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import ListScreen from '../components/ListScreen'
-import { deleteTask } from '../redux/actions'
+import { deleteTask, fetchListsAndTasks } from '../redux/actions'
 import { byIdToArray } from '../services/utilities'
 
 const mapStateToProps = (state, ownProps) => {
@@ -13,10 +13,11 @@ const mapStateToProps = (state, ownProps) => {
       ...list,
       tasks: tasks.filter(task => task.listId === listId)
     },
+    listsAndTasksAreLoading: state.entities.lists.isLoading,
   }
 }
 
 export default connect(
   mapStateToProps,
-  { deleteTask },
+  { deleteTask, fetchListsAndTasks },
 )(ListScreen)
