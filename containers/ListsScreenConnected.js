@@ -18,6 +18,7 @@ const mapStateToProps = (state) => {
         tasks: tasks.filter(task => task.listId === listId)
       }
     }),
+    listsAndTasksAreLoading: state.entities.lists.isLoading,
   }
 }
 

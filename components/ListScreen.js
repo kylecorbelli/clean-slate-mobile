@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   Alert,
+  RefreshControl,
+  ScrollView,
   Text,
   View,
 } from 'react-native'
@@ -15,11 +17,13 @@ export default class ListScreen extends Component {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
     }).isRequired,
+    fetchListsAndTasks: PropTypes.func.isRequired,
     list: PropTypes.shape({
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       tasks: PropTypes.array.isRequired,
-    })
+    }),
+    listsAndTasksAreLoading: PropTypes.bool.isRequired,
   }
 
   state = {
@@ -74,28 +78,43 @@ export default class ListScreen extends Component {
   }
 
   render () {
-    const { tasks } = this.props.list
+    const {
+      fetchListsAndTasks,
+      list: {
+        tasks,
+      },
+      listsAndTasksAreLoading,
+    } = this.props
     const { taskInFocusId } = this.state
     return (
-      <List>
-        {
-          tasks.map((task, index) => (
-            <Swipeout
-              backgroundColor="transparent"
-              close={taskInFocusId !== task.id}
-              key={index}
-              onOpen={this.setTaskInFocusId(task.id)}
-              right={this.swipeoutButtons(task)}
-            >
-              <ListItem
-                onPress={this.selectTask(task)}
-                title={task.description}
-                subtitle={(task.isDone ? 'Done' : 'Incomplete')}
-              />
-            </Swipeout>
-          ))
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={listsAndTasksAreLoading}
+            onRefresh={fetchListsAndTasks}
+          />
         }
-      </List>
+      >
+        <List>
+          {
+            tasks.map((task, index) => (
+              <Swipeout
+                backgroundColor="transparent"
+                close={taskInFocusId !== task.id}
+                key={index}
+                onOpen={this.setTaskInFocusId(task.id)}
+                right={this.swipeoutButtons(task)}
+              >
+                <ListItem
+                  onPress={this.selectTask(task)}
+                  title={task.description}
+                  subtitle={(task.isDone ? 'Done' : 'Incomplete')}
+                />
+              </Swipeout>
+            ))
+          }
+        </List>
+      </ScrollView>
     )
   }
 }
