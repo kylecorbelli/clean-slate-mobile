@@ -16,6 +16,9 @@ import {
   FETCH_LISTS_AND_TASKS_REQUEST_SENT,
   FETCH_LISTS_AND_TASKS_REQUEST_SUCCEEDED,
   SET_HAS_SPLASH_SCREEN_BEEN_SHOWN,
+  UPDATE_TASK_REQUEST_FAILED,
+  UPDATE_TASK_REQUEST_SENT,
+  UPDATE_TASK_REQUEST_SUCCEEDED,
 } from '../action-types'
 
 export const setHasSplashScreenBeenShown = (hasSplashScreenBeenShown) => ({
@@ -262,6 +265,45 @@ export const deleteList = (listId) => async (dispatch) => {
     dispatch(deleteListRequestSucceeded(listId))
   } catch (error) {
     dispatch(deleteListRequestFailed())
+    throw error
+  }
+}
+
+export const updateTaskRequestSent = () => ({
+  type: UPDATE_TASK_REQUEST_SENT,
+})
+
+export const updateTaskRequestFailed = () => ({
+  type: UPDATE_TASK_REQUEST_FAILED,
+})
+
+export const updateTaskRequestSucceeded = (taskId, updatedTaskDetails) => ({
+  type: UPDATE_TASK_REQUEST_SUCCEEDED,
+  payload: {
+    taskId,
+    updatedTaskDetails,
+  },
+})
+
+export const updateTask = (taskId, updatedTaskDetails) => async (dispatch) => {
+  dispatch(updateTaskRequestSent())
+  try {
+    const response = await graphql({
+      query: `
+        mutation UpdateTask($id: ID!, $taskInput: TaskInput!) {
+          updateTask(id: $id, taskInput: $taskInput) {
+            id
+          }
+        }
+      `,
+      variables: {
+        id: taskId,
+        taskInput: updatedTaskDetails,
+      },
+    })
+    dispatch(updateTaskRequestSucceeded(taskId, updatedTaskDetails))
+  } catch (error) {
+    dispatch(updateTaskRequestFailed())
     throw error
   }
 }

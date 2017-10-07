@@ -8,6 +8,9 @@ import {
   FETCH_LISTS_AND_TASKS_REQUEST_SENT,
   FETCH_LISTS_AND_TASKS_REQUEST_SUCCEEDED,
   FETCH_LISTS_AND_TASKS_REQUEST_FAILED,
+  UPDATE_TASK_REQUEST_FAILED,
+  UPDATE_TASK_REQUEST_SENT,
+  UPDATE_TASK_REQUEST_SUCCEEDED,
 } from '../../../../action-types'
 
 const isLoading = (state = false, action) => {
@@ -15,6 +18,7 @@ const isLoading = (state = false, action) => {
     case CREATE_TASK_REQUEST_SENT:
     case FETCH_LISTS_AND_TASKS_REQUEST_SENT:
     case DELETE_TASK_REQUEST_SENT:
+    case UPDATE_TASK_REQUEST_SENT:
       return true
     case CREATE_TASK_REQUEST_FAILED:
     case CREATE_TASK_REQUEST_SUCCEEDED:
@@ -22,6 +26,8 @@ const isLoading = (state = false, action) => {
     case DELETE_TASK_REQUEST_SUCCEEDED:
     case FETCH_LISTS_AND_TASKS_REQUEST_SUCCEEDED:
     case FETCH_LISTS_AND_TASKS_REQUEST_FAILED:
+    case UPDATE_TASK_REQUEST_FAILED:
+    case UPDATE_TASK_REQUEST_SUCCEEDED:
       return false
     default:
       return state

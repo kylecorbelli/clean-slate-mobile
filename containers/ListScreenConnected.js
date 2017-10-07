@@ -1,6 +1,10 @@
 import { connect } from 'react-redux'
 import ListScreen from '../components/ListScreen'
-import { deleteTask, fetchListsAndTasks } from '../redux/actions'
+import {
+  deleteTask,
+  fetchListsAndTasks,
+  updateTask,
+} from '../redux/actions'
 import { byIdToArray } from '../services/utilities'
 
 const mapStateToProps = (state, ownProps) => {
@@ -19,5 +23,9 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(
   mapStateToProps,
-  { deleteTask, fetchListsAndTasks },
+  {
+    deleteTask,
+    fetchListsAndTasks,
+    updateTask,
+  },
 )(ListScreen)

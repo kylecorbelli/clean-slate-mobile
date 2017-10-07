@@ -3,6 +3,7 @@ import {
   createTaskRequestSucceeded,
   deleteTaskRequestSucceeded,
   fetchListsAndTasksRequestSucceeded,
+  updateTaskRequestSucceeded,
 } from '../../../../actions'
 
 describe('lists.byId', () => {
@@ -63,6 +64,38 @@ describe('lists.byId', () => {
         1: {
           id: 1,
           description: 'first task',
+        },
+      }
+      expect(newState).toEqual(expectedNewState)
+    })
+  })
+
+  describe('UPDATE_TASK_SUCCEEDED', () => {
+    it('updates targeted task details', () => {
+      const initialState = {
+        1: {
+          id: 1,
+          description: 'First Task',
+          isDone: false,
+        },
+        2: {
+          id: 2,
+          description: 'Second Task',
+          isDone: false,
+        },
+      }
+      const action = updateTaskRequestSucceeded(1, { description: 'Updated First Task' })
+      const newState = byId(initialState, action)
+      const expectedNewState = {
+        1: {
+          id: 1,
+          description: 'Updated First Task',
+          isDone: false,
+        },
+        2: {
+          id: 2,
+          description: 'Second Task',
+          isDone: false,
         },
       }
       expect(newState).toEqual(expectedNewState)

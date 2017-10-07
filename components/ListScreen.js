@@ -24,6 +24,7 @@ export default class ListScreen extends Component {
       tasks: PropTypes.array.isRequired,
     }),
     listsAndTasksAreLoading: PropTypes.bool.isRequired,
+    updateTask: PropTypes.func.isRequired,
   }
 
   state = {
@@ -54,6 +55,14 @@ export default class ListScreen extends Component {
     )
   }
 
+  toggleTaskIsDone = (task) => async (event) => {
+    const { updateTask } = this.props
+    await updateTask(task.id, { isDone: !task.isDone })
+    this.setState({
+      taskInFocusId: 0,
+    })
+  }
+
   swipeoutButtons = (task) => {
     const { deleteTask } = this.props
     return [
@@ -76,6 +85,19 @@ export default class ListScreen extends Component {
       taskInFocusId,
     })
   }
+
+  taskIcon = (task) => ({
+    color: task.isDone ? 'lightgray' : '#444',
+    name: task.isDone ? 'ios-checkbox-outline' : 'ios-square-outline',
+    size: 40,
+    type: 'ionicon',
+  })
+
+  taskTitleStyle = (task) => ({
+    color: task.isDone ? 'lightgray' : '#444',
+    fontStyle: task.isDone ? 'italic' : 'normal',
+    textDecorationLine: task.isDone ? 'line-through' : 'none',
+  })
 
   render () {
     const {
@@ -106,9 +128,11 @@ export default class ListScreen extends Component {
                 right={this.swipeoutButtons(task)}
               >
                 <ListItem
+                  leftIcon={this.taskIcon(task)}
+                  leftIconOnPress={this.toggleTaskIsDone(task)}
                   onPress={this.selectTask(task)}
                   title={task.description}
-                  subtitle={(task.isDone ? 'Done' : 'Incomplete')}
+                  titleStyle={this.taskTitleStyle(task)}
                 />
               </Swipeout>
             ))
