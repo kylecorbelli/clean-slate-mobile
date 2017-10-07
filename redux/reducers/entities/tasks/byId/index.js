@@ -27,8 +27,8 @@ const byId = (state = {}, action) => {
         ...state,
         [taskId]: {
           ...targetTask,
-          ...action.payload.updatedTaskDetails,
-        }
+          ...updatedTaskDetails,
+        },
       }
     default:
       return state
