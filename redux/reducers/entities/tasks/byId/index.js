@@ -2,6 +2,7 @@ import {
   CREATE_TASK_REQUEST_SUCCEEDED,
   DELETE_TASK_REQUEST_SUCCEEDED,
   FETCH_LISTS_AND_TASKS_REQUEST_SUCCEEDED,
+  UPDATE_TASK_REQUEST_SUCCEEDED,
 } from '../../../../action-types'
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -19,6 +20,16 @@ const byId = (state = {}, action) => {
       return newState
     case FETCH_LISTS_AND_TASKS_REQUEST_SUCCEEDED:
       return action.payload.tasksById
+    case UPDATE_TASK_REQUEST_SUCCEEDED:
+      const { taskId, updatedTaskDetails } = action.payload
+      const targetTask = cloneDeep(state[taskId])
+      return {
+        ...state,
+        [taskId]: {
+          ...targetTask,
+          ...action.payload.updatedTaskDetails,
+        }
+      }
     default:
       return state
   }

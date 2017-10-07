@@ -32,7 +32,7 @@
 	"jest": {
 		"preset": "react-native",
 		"transformIgnorePatterns": [
-			"node_modules/(?!(react-native|react-native-elements|react-native-vector-icons|react-native-tab-navigator|react-navigation|react-native-swipeout)/)"
+			"node_modules/(?!(react-native|react-native-elements|react-native-vector-icons|react-native-tab-navigator|react-navigation|react-native-swipeout|react-native-camera)/)"
 		]
 	}
 }
