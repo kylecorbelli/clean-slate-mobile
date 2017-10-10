@@ -68,7 +68,7 @@ export default class ListScreen extends Component {
   }
 
   componentWillUpdate = (nextProps) => {
-    const tasks = nextProps.list.tasks
+    const { tasks } = nextProps.list
     if (tasks.length !== this.props.list.tasks.length) {
       this.setTaskSpinAnimations(tasks)
       this.setTaskDisappearAnimations(tasks)
