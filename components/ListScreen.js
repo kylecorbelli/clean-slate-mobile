@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
   Alert,
+  Animated,
   RefreshControl,
   ScrollView,
   Text,
@@ -27,8 +28,34 @@ export default class ListScreen extends Component {
     updateTask: PropTypes.func.isRequired,
   }
 
+  taskSpinAnimations = {}
+
   state = {
     taskInFocusId: 0,
+  }
+
+  constructor (props) {
+    super(props)
+    const { tasks } = props.list
+    this.setTaskSpinAnimations(tasks)
+  }
+
+  setTaskSpinAnimations = (tasks) => {
+    this.taskSpinAnimations = tasks.reduce(
+      (accumulatedTaskSpinAnimations, currentTask) => {
+        return {
+          ...accumulatedTaskSpinAnimations,
+          [currentTask.id]: new Animated.Value(0),
+        }
+      },
+      {},
+    )
+  }
+
+  componentWillUpdate = (nextProps) => {
+    if (nextProps.list.tasks.length !== this.props.list.tasks.length) {
+      this.setTaskSpinAnimations(nextProps.list.tasks)
+    }
   }
 
   deleteTaskWithConfirmation = (task) => (event) => {
@@ -56,11 +83,16 @@ export default class ListScreen extends Component {
   }
 
   toggleTaskIsDone = (task) => async (event) => {
-    const { updateTask } = this.props
-    await updateTask(task.id, { isDone: !task.isDone })
-    this.setState({
-      taskInFocusId: 0,
+    Animated.timing(
+      this.taskSpinAnimations[task.id],
+      {
+        toValue: 360,
+        duration: 500,
+      },
+    ).start(() => {
+      this.taskSpinAnimations[task.id].setValue(0)
     })
+    this.props.updateTask(task.id, { isDone: !task.isDone })
   }
 
   swipeoutButtons = (task) => {
@@ -117,24 +149,38 @@ export default class ListScreen extends Component {
           />
         }
       >
-        <List>
+        <List
+          containerStyle={{ backgroundColor: 'transparent' }}
+        >
           {
             tasks.map((task, index) => (
-              <Swipeout
-                backgroundColor="transparent"
-                close={taskInFocusId !== task.id}
+              <Animated.View
                 key={index}
-                onOpen={this.setTaskInFocusId(task.id)}
-                right={this.swipeoutButtons(task)}
+                style={{
+                  transform: [{
+                    rotateX: this.taskSpinAnimations[task.id].interpolate({
+                      inputRange: [ 0, 360 ],
+                      outputRange: [ '0deg', '360deg' ],
+                    }),
+                  }],
+                }}
               >
-                <ListItem
-                  leftIcon={this.taskIcon(task)}
-                  leftIconOnPress={this.toggleTaskIsDone(task)}
-                  onPress={this.selectTask(task)}
-                  title={task.description}
-                  titleStyle={this.taskTitleStyle(task)}
-                />
-              </Swipeout>
+                <Swipeout
+                  backgroundColor="transparent"
+                  close={taskInFocusId !== task.id}
+                  onOpen={this.setTaskInFocusId(task.id)}
+                  right={this.swipeoutButtons(task)}
+                >
+                  <ListItem
+                  containerStyle={{ backgroundColor: 'white' }}
+                    leftIcon={this.taskIcon(task)}
+                    leftIconOnPress={this.toggleTaskIsDone(task)}
+                    onPress={this.selectTask(task)}
+                    title={task.description}
+                    titleStyle={this.taskTitleStyle(task)}
+                  />
+                </Swipeout>
+              </Animated.View>
             ))
           }
         </List>
