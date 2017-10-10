@@ -288,6 +288,7 @@ export const updateTaskRequestSucceeded = (taskId, updatedTaskDetails) => ({
 export const updateTask = (taskId, updatedTaskDetails) => async (dispatch) => {
   dispatch(updateTaskRequestSent())
   try {
+    dispatch(updateTaskRequestSucceeded(taskId, updatedTaskDetails))
     const response = await graphql({
       query: `
         mutation UpdateTask($id: ID!, $taskInput: TaskInput!) {
@@ -301,8 +302,8 @@ export const updateTask = (taskId, updatedTaskDetails) => async (dispatch) => {
         taskInput: updatedTaskDetails,
       },
     })
-    dispatch(updateTaskRequestSucceeded(taskId, updatedTaskDetails))
   } catch (error) {
+    // Will need to undo the optimistic update if the request fails:
     dispatch(updateTaskRequestFailed())
     throw error
   }
