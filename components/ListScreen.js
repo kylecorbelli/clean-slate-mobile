@@ -5,6 +5,7 @@ import {
   Animated,
   RefreshControl,
   ScrollView,
+  StyleSheet,
   Text,
   View,
 } from 'react-native'
@@ -36,8 +37,7 @@ export default class ListScreen extends Component {
 
   constructor (props) {
     super(props)
-    const { tasks } = props.list
-    this.setTaskSpinAnimations(tasks)
+    this.setTaskSpinAnimations(props.list.tasks)
   }
 
   setTaskSpinAnimations = (tasks) => {
@@ -150,7 +150,7 @@ export default class ListScreen extends Component {
         }
       >
         <List
-          containerStyle={{ backgroundColor: 'transparent' }}
+          containerStyle={styles.listContainer}
         >
           {
             tasks.map((task, index) => (
@@ -172,7 +172,7 @@ export default class ListScreen extends Component {
                   right={this.swipeoutButtons(task)}
                 >
                   <ListItem
-                  containerStyle={{ backgroundColor: 'white' }}
+                    containerStyle={styles.listItemContainer}
                     leftIcon={this.taskIcon(task)}
                     leftIconOnPress={this.toggleTaskIsDone(task)}
                     onPress={this.selectTask(task)}
@@ -188,3 +188,11 @@ export default class ListScreen extends Component {
     )
   }
 }
+const styles = StyleSheet.create({
+  listContainer: {
+    backgroundColor: 'transparent',
+  },
+  listItemContainer: {
+    backgroundColor: 'white',
+  },
+})
