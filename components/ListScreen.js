@@ -30,6 +30,7 @@ export default class ListScreen extends Component {
   }
 
   taskSpinAnimations = {}
+  taskDisappearAnimations = {}
 
   state = {
     taskInFocusId: 0,
@@ -37,7 +38,9 @@ export default class ListScreen extends Component {
 
   constructor (props) {
     super(props)
-    this.setTaskSpinAnimations(props.list.tasks)
+    const { tasks } = props.list
+    this.setTaskSpinAnimations(tasks)
+    this.setTaskDisappearAnimations(tasks)
   }
 
   setTaskSpinAnimations = (tasks) => {
@@ -52,14 +55,27 @@ export default class ListScreen extends Component {
     )
   }
 
+  setTaskDisappearAnimations = (tasks) => {
+    this.taskDisappearAnimations = tasks.reduce(
+      (accumulatedTaskDisappearAnimations, currentTask) => {
+        return {
+          ...accumulatedTaskDisappearAnimations,
+          [currentTask.id]: new Animated.Value(0),
+        }
+      },
+      {},
+    )
+  }
+
   componentWillUpdate = (nextProps) => {
-    if (nextProps.list.tasks.length !== this.props.list.tasks.length) {
-      this.setTaskSpinAnimations(nextProps.list.tasks)
+    const tasks = nextProps.list.tasks
+    if (tasks.length !== this.props.list.tasks.length) {
+      this.setTaskSpinAnimations(tasks)
+      this.setTaskDisappearAnimations(tasks)
     }
   }
 
   deleteTaskWithConfirmation = (task) => (event) => {
-    const { deleteTask } = this.props
     Alert.alert(
       'Delete Task?',
       `You are about to delete the task "${task.description}". This action cannot be undone. Do you still wish to continue?`,
@@ -75,7 +91,18 @@ export default class ListScreen extends Component {
         {
           text: 'Confirm',
           onPress: () => {
-            deleteTask(task.id)
+            this.setState({
+              taskInFocusId: 0,
+            })
+            Animated.timing(
+              this.taskDisappearAnimations[task.id],
+              {
+                toValue: 1,
+                duration: 500,
+              },
+            ).start(() => {
+              this.props.deleteTask(task.id)
+            })
           }
         }
       ],
@@ -96,7 +123,6 @@ export default class ListScreen extends Component {
   }
 
   swipeoutButtons = (task) => {
-    const { deleteTask } = this.props
     return [
       {
         autoClose: true,
@@ -157,12 +183,22 @@ export default class ListScreen extends Component {
               <Animated.View
                 key={index}
                 style={{
-                  transform: [{
-                    rotateX: this.taskSpinAnimations[task.id].interpolate({
-                      inputRange: [ 0, 360 ],
-                      outputRange: [ '0deg', '360deg' ],
-                    }),
-                  }],
+                  height: this.taskDisappearAnimations[task.id].interpolate({
+                    inputRange: [ 0, 1 ],
+                    outputRange: [ 65, 0 ],
+                  }),
+                  opacity: this.taskDisappearAnimations[task.id].interpolate({
+                    inputRange: [ 0, 1 ],
+                    outputRange: [ 1, 0 ],
+                  }),
+                  transform: [
+                    {
+                      rotateX: this.taskSpinAnimations[task.id].interpolate({
+                        inputRange: [ 0, 360 ],
+                        outputRange: [ '0deg', '360deg' ],
+                      }),
+                    },
+                  ],
                 }}
               >
                 <Swipeout
