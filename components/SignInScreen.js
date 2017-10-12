@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import {
   Alert,
+  Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native'
 import {
@@ -16,7 +19,7 @@ import {
   blue5,
   centeredContainer,
   textInput,
-  textInputBorderTop,
+  textInputMarginTop,
 } from '../styles/shared'
 import CloseModalButton from './CloseModalButton'
 
@@ -50,18 +53,40 @@ export default class HomeScreen extends Component {
 
   render () {
     return (
-      <View style={styles.screen}>
-        <View style={styles.centeredContainer}>
-          <View style={styles.form}>
-            <TextInput style={styles.textInput} autoCapitalize="none" autoCorrect={false} keyboardType="email-address" placeholder="Email" onChangeText={this.updateFormField('email')} />
-            <TextInput style={[ styles.textInput, styles.textInputBorderTop ]} autoCapitalize="none" autoCorrect={false} secureTextEntry={true} placeholder="Password" onChangeText={this.updateFormField('password')} />
+      <KeyboardAvoidingView behavior="padding">
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.screen}>
+            <View style={[ styles.form, styles.signInForm ]}>
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                keyboardType="email-address"
+                onChangeText={this.updateFormField('email')}
+                onSubmitEditing={() => this.passwordInput.focus()}
+                placeholder="Email"
+                placeholderTextColor="white"
+                returnKeyType="next"
+                style={styles.textInput}
+              />
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                onChangeText={this.updateFormField('password')}
+                onSubmitEditing={this.submitForm}
+                placeholder="Password"
+                placeholderTextColor="white"
+                ref={passwordInput => this.passwordInput = passwordInput}
+                returnKeyType="go"
+                secureTextEntry={true}
+                style={[ styles.textInput, textInputMarginTop ]}
+              />
+            </View>
+            <TouchableOpacity style={[ styles.button, styles.signInButton ]} onPress={this.submitForm}>
+              <Text style={styles.ctaText}>Sign In</Text>
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity style={styles.button} onPress={this.submitForm}>
-            <Text style={styles.ctaText}>Sign In</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.centeredContainer}></View>
-      </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     )
   }
 }
@@ -70,14 +95,19 @@ const styles = StyleSheet.create({
   screen: {
     alignItems: 'center',
     backgroundColor: blue3,
-    display: 'flex',
-    flex: 1,
+    height: '100%',
     justifyContent: 'center',
+  },
+  signInButton: {
+    marginTop: 40,
+    width: '80%',
+  },
+  signInForm: {
+    width: '80%',
   },
   button,
   ctaText,
   form,
   centeredContainer,
   textInput,
-  textInputBorderTop,
 })

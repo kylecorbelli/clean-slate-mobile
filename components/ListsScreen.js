@@ -14,6 +14,8 @@ import {
   blue1,
   blue3,
   red1,
+  red4,
+  yellow3,
 } from '../styles/shared'
 
 export default class ListsScreen extends Component {
@@ -78,6 +80,27 @@ export default class ListsScreen extends Component {
     this.props.fetchListsAndTasks()
   }
 
+  completedFractionCount = (list) => {
+    const { tasks } = list
+    return `${tasks.filter(task => task.isDone).length} / ${tasks.length}`
+  }
+
+  completedFractionContainerStyle = (list) => {
+    const { tasks } = list
+    const completedRatio = tasks.filter(task => task.isDone).length / tasks.length
+    let backgroundColor
+    if (completedRatio === 1) {
+      backgroundColor = blue1
+    } else if (completedRatio >= 0.67) {
+      backgroundColor = blue3
+    } else if (completedRatio >= 0.34) {
+      backgroundColor = yellow3
+    } else {
+      backgroundColor = red4
+    }
+    return { backgroundColor }
+  }
+
   render () {
     const {
       fetchListsAndTasks,
@@ -105,7 +128,7 @@ export default class ListsScreen extends Component {
                 right={this.swipeoutButtons(list)}
               >
                 <ListItem
-                  badge={{ value: list.tasks.filter(task => !task.isDone).length, containerStyle: { backgroundColor: blue1 } }}
+                  badge={{ value: this.completedFractionCount(list), containerStyle: this.completedFractionContainerStyle(list) }}
                   onPress={this.selectList(list)}
                   title={list.title}
                 />

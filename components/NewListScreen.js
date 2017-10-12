@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
+  Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native'
 import { Icon } from 'react-native-elements'
@@ -35,21 +38,34 @@ export default class NewListScreen extends Component {
 
   createNewList = async () => {
     const { createList, navigation } = this.props
+    Keyboard.dismiss()
     const list = await createList(this.state.title)
     navigation.navigate('List', { listId: list.id, title: list.title })
   }
 
   render () {
     return (
-      <View style={styles.screen}>
-        <View style={[ form, styles.newListForm ]}>
-          <TextInput autoFocus={true} placeholder="New List Title" style={textInput} onChangeText={this.updateFormField('title')} />
-        </View>
-        <TouchableOpacity style={[ button, styles.newListButton ]} onPress={this.createNewList}>
-          <Text style={[ ctaText ]}>Add New List</Text>
-        </TouchableOpacity>
-        <CloseModalButton navigation={this.props.navigation} />
-      </View>
+      <KeyboardAvoidingView behavior="padding">
+        <TouchableWithoutFeedback onPressIn={Keyboard.dismiss}>
+          <View style={styles.screen}>
+            <View style={[ form, styles.newListForm ]}>
+              <TextInput
+                autoFocus={true}
+                onChangeText={this.updateFormField('title')}
+                onSubmitEditing={this.createNewList}
+                placeholder="New List Title"
+                placeholderTextColor="white"
+                returnKeyType="done"
+                style={textInput}
+              />
+            </View>
+            <TouchableOpacity style={[ button, styles.newListButton ]} onPress={this.createNewList}>
+              <Text style={ctaText}>Add New List</Text>
+            </TouchableOpacity>
+            <CloseModalButton navigation={this.props.navigation} />
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     )
   }
 }
@@ -62,6 +78,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   newListButton: {
+    marginTop: 40,
     width: '80%',
   },
   newListForm: {

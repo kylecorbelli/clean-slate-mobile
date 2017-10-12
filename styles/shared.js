@@ -17,24 +17,19 @@ export const red4 = '#FFA794'
 export const red5 = '#FFD9D1'
 
 export const form = {
-  backgroundColor: 'white',
   width: '100%',
 }
 
 export const textInput = {
+  borderBottomWidth: 1,
+  borderColor: 'white',
+  color: 'white',
   padding: 10,
-}
-
-export const textInputBorderTop = {
-  borderTopColor: blue3,
-  borderTopWidth: 1,
 }
 
 export const button = {
   alignItems: 'center',
-  backgroundColor: 'transparent',
-  borderColor: 'white',
-  borderWidth: 1,
+  backgroundColor: blue1,
   display: 'flex',
   justifyContent: 'center',
   marginTop: 10,
@@ -52,4 +47,8 @@ export const centeredContainer = {
   flex: 1,
   justifyContent: 'center',
   width: '80%',
+}
+
+export const textInputMarginTop = {
+  marginTop: 10,
 }
