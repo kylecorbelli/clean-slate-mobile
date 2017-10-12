@@ -135,11 +135,6 @@ export default class ListScreen extends Component {
         backgroundColor: red1,
         component: <SwipeoutDeleteButton />,
         onPress: this.deleteTaskWithConfirmation(task),
-        style: {
-          borderBottomWidth: 1,
-          borderColor: 'white',
-          borderTopWidth: 1,
-        },
       },
     ]
   }
