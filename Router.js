@@ -39,6 +39,7 @@ const AuthRouter = TabNavigator({
     },
   },
 }, {
+  animationEnabled: true,
   initialRouteName: 'SignIn',
   tabBarOptions: {
     activeTintColor: blue1,

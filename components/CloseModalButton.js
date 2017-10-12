@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
+  Keyboard,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,6 +17,7 @@ export default class CloseModalButton extends Component {
 
   navigateBack = () => {
     const { navigation } = this.props
+    Keyboard.dismiss()
     navigation.goBack()
   }
 

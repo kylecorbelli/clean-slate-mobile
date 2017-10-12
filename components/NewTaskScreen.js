@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
+  Keyboard,
+  KeyboardAvoidingView,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native'
 import { Icon } from 'react-native-elements'
@@ -20,6 +23,17 @@ import {
 export default class NewTaskScreen extends Component {
   static propTypes = {
     createTask: PropTypes.func.isRequired,
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func.isRequired,
+      state: PropTypes.shape({
+        params: PropTypes.shape({
+          listId: PropTypes.string.isRequired,
+        }),
+      }),
+    }).isRequired,
+    list: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+    }).isRequired,
   }
 
   state = {
@@ -34,21 +48,39 @@ export default class NewTaskScreen extends Component {
     const { description } = this.state
     const { createTask, navigation } = this.props
     const { listId } = navigation.state.params
+    Keyboard.dismiss()
     await createTask(description, listId)
     navigation.goBack()
   }
 
   render () {
+    const { list } = this.props
     return (
-      <View style={styles.screen}>
-        <View style={[ form, styles.newListForm ]}>
-          <TextInput autoFocus={true} placeholder="New Task Description" style={textInput} onChangeText={this.updateFormField('description')} />
-        </View>
-        <TouchableOpacity style={[ button, styles.newListButton ]} onPress={this.createNewTask}>
-          <Text style={[ ctaText ]}>Add New Task</Text>
-        </TouchableOpacity>
-        <CloseModalButton navigation={this.props.navigation} />
-      </View>
+      <KeyboardAvoidingView behavior="padding">
+        <TouchableWithoutFeedback onPressIn={Keyboard.dismiss}>
+          <View style={styles.screen}>
+            <View style={styles.newTaskMessage}>
+              <Text style={styles.newTaskText}>New item in list</Text>
+              <Text style={styles.newTaskText}>"{list.title}"</Text>
+            </View>
+            <View style={[ form, styles.newTaskForm ]}>
+              <TextInput
+                autoFocus={true}
+                onChangeText={this.updateFormField('description')}
+                onSubmitEditing={this.createNewTask}
+                placeholder="New Task Description"
+                placeholderTextColor="white"
+                returnKeyType="done"
+                style={textInput}
+              />
+            </View>
+            <TouchableOpacity style={[ button, styles.newTaskButton ]} onPress={this.createNewTask}>
+              <Text style={ctaText}>Add New Task</Text>
+            </TouchableOpacity>
+            <CloseModalButton navigation={this.props.navigation} />
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
     )
   }
 }
@@ -60,10 +92,19 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
   },
-  newListButton: {
+  newTaskMessage: {
+    alignItems: 'center',
+    marginBottom: 80,
+  },
+  newTaskText: {
+    color: 'white',
+    fontSize: 24,
+  },
+  newTaskButton: {
+    marginTop: 40,
     width: '80%',
   },
-  newListForm: {
+  newTaskForm: {
     width: '80%',
   },
 })
