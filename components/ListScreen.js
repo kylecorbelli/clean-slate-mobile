@@ -11,7 +11,13 @@ import {
 } from 'react-native'
 import Swipeout from 'react-native-swipeout'
 import { List, ListItem } from 'react-native-elements'
-import { red1 } from '../styles/shared'
+import {
+  blue3,
+  blue4,
+  blue5,
+  red1,
+} from '../styles/shared'
+import SwipeoutDeleteButton from './SwipeoutDeleteButton'
 
 export default class ListScreen extends Component {
   static propTypes = {
@@ -127,8 +133,13 @@ export default class ListScreen extends Component {
       {
         autoClose: true,
         backgroundColor: red1,
+        component: <SwipeoutDeleteButton />,
         onPress: this.deleteTaskWithConfirmation(task),
-        text: 'Delete',
+        style: {
+          borderBottomWidth: 1,
+          borderColor: 'white',
+          borderTopWidth: 1,
+        },
       },
     ]
   }
@@ -145,14 +156,21 @@ export default class ListScreen extends Component {
   }
 
   taskIcon = (task) => ({
-    color: task.isDone ? 'lightgray' : '#444',
-    name: task.isDone ? 'ios-checkbox-outline' : 'ios-square-outline',
-    size: 40,
-    type: 'ionicon',
+    color: 'white',
+    name: task.isDone ? 'check-circle' : 'circle-thin',
+    size: 35,
+    type: 'font-awesome',
+  })
+
+  taskContainerStyle = (task) => ({
+    backgroundColor: task.isDone ? blue4 : blue3,
+    borderColor: 'white',
+    borderBottomWidth: 0,
+    borderTopWidth: 1,
   })
 
   taskTitleStyle = (task) => ({
-    color: task.isDone ? 'lightgray' : '#444',
+    color: 'white',
     fontStyle: task.isDone ? 'italic' : 'normal',
     textDecorationLine: task.isDone ? 'line-through' : 'none',
   })
@@ -174,6 +192,7 @@ export default class ListScreen extends Component {
             onRefresh={fetchListsAndTasks}
           />
         }
+        style={styles.screen}
       >
         <List
           containerStyle={styles.listContainer}
@@ -185,7 +204,7 @@ export default class ListScreen extends Component {
                 style={{
                   height: this.taskDisappearAnimations[task.id].interpolate({
                     inputRange: [ 0, 1 ],
-                    outputRange: [ 65, 0 ],
+                    outputRange: [ 56, 0 ],
                   }),
                   opacity: this.taskDisappearAnimations[task.id].interpolate({
                     inputRange: [ 0, 1 ],
@@ -208,10 +227,11 @@ export default class ListScreen extends Component {
                   right={this.swipeoutButtons(task)}
                 >
                   <ListItem
-                    containerStyle={styles.listItemContainer}
+                    containerStyle={this.taskContainerStyle(task)}
                     leftIcon={this.taskIcon(task)}
                     leftIconOnPress={this.toggleTaskIsDone(task)}
                     onPress={this.selectTask(task)}
+                    rightIcon={{ name: 'chevron-right', color: 'white' }}
                     title={task.description}
                     titleStyle={this.taskTitleStyle(task)}
                   />
@@ -225,10 +245,12 @@ export default class ListScreen extends Component {
   }
 }
 const styles = StyleSheet.create({
+  screen: {
+    backgroundColor: blue5,
+    height: '100%',
+  },
   listContainer: {
     backgroundColor: 'transparent',
-  },
-  listItemContainer: {
-    backgroundColor: 'white',
+    marginTop: -1,
   },
 })
