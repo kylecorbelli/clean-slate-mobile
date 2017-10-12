@@ -17,6 +17,7 @@ import {
   red4,
   yellow3,
 } from '../styles/shared'
+import SwipeoutDeleteButton from './SwipeoutDeleteButton'
 
 export default class ListsScreen extends Component {
   static propTypes = {
@@ -70,8 +71,8 @@ export default class ListsScreen extends Component {
       {
         autoClose: true,
         backgroundColor: red1,
+        component: <SwipeoutDeleteButton containerStyle={{ borderColor: 'lightgray', borderTopWidth: 1 }} />,
         onPress: this.deleteListWithConfirmation(list),
-        text: 'Delete',
       },
     ]
   }
@@ -117,7 +118,7 @@ export default class ListsScreen extends Component {
           />
         }
       >
-        <List>
+        <List containerStyle={styles.listContainer}>
           {
             lists.map((list, index) => (
               <Swipeout
@@ -129,6 +130,7 @@ export default class ListsScreen extends Component {
               >
                 <ListItem
                   badge={{ value: this.completedFractionCount(list), containerStyle: this.completedFractionContainerStyle(list) }}
+                  containerStyle={styles.individualListContainer}
                   onPress={this.selectList(list)}
                   title={list.title}
                 />
@@ -142,15 +144,14 @@ export default class ListsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    alignItems: 'center',
-    backgroundColor: 'white',
-    display: 'flex',
-    flex: 1,
-    justifyContent: 'center',
+  listContainer: {
+    backgroundColor: 'transparent',
+    marginTop: -1,
   },
-  title: {
-    color: blue3,
-    fontSize: 36,
+  individualListContainer: {
+    backgroundColor: 'white',
+    borderBottomWidth: 0,
+    borderColor: 'lightgray',
+    borderTopWidth: 1,
   },
 })
