@@ -9,8 +9,6 @@ import PropTypes from 'prop-types'
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    borderColor: 'white',
-    borderTopWidth: 1,
     height: '100%',
     justifyContent: 'center',
   },

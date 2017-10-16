@@ -151,21 +151,19 @@ export default class ListScreen extends Component {
   }
 
   taskIcon = (task) => ({
-    color: 'white',
+    color: blue3,
     name: task.isDone ? 'check-circle' : 'circle-thin',
     size: 35,
     type: 'font-awesome',
   })
 
   taskContainerStyle = (task) => ({
-    backgroundColor: task.isDone ? blue4 : blue3,
-    borderColor: 'white',
-    borderBottomWidth: 0,
-    borderTopWidth: 1,
+    backgroundColor: 'white',
+    borderWidth: 0,
   })
 
   taskTitleStyle = (task) => ({
-    color: 'white',
+    color: task.isDone ? 'darkgray' : '#444',
     fontStyle: task.isDone ? 'italic' : 'normal',
     textDecorationLine: task.isDone ? 'line-through' : 'none',
   })
@@ -226,7 +224,6 @@ export default class ListScreen extends Component {
                     leftIcon={this.taskIcon(task)}
                     leftIconOnPress={this.toggleTaskIsDone(task)}
                     onPress={this.selectTask(task)}
-                    rightIcon={{ name: 'chevron-right', color: 'white' }}
                     title={task.description}
                     titleStyle={this.taskTitleStyle(task)}
                   />
@@ -246,6 +243,6 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     backgroundColor: 'transparent',
-    marginTop: -1,
+    marginTop: 0,
   },
 })

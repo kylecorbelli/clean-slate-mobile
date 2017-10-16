@@ -13,6 +13,7 @@ import Swipeout from 'react-native-swipeout'
 import {
   blue1,
   blue3,
+  blue5,
   red1,
   red4,
   yellow3,
@@ -117,6 +118,7 @@ export default class ListsScreen extends Component {
             onRefresh={fetchListsAndTasks}
           />
         }
+        style={styles.screen}
       >
         <List containerStyle={styles.listContainer}>
           {
@@ -144,9 +146,14 @@ export default class ListsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    backgroundColor: blue5,
+    flex: 1,
+  },
   listContainer: {
     backgroundColor: 'transparent',
-    marginTop: -1,
+    borderTopWidth: 0,
+    marginTop: 0,
   },
   individualListContainer: {
     backgroundColor: 'white',
