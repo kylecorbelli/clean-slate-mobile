@@ -4,6 +4,7 @@ import {
   createTaskRequestSucceeded,
   deleteListRequestSucceeded,
   fetchListsAndTasksRequestSucceeded,
+  updateListRequestSucceeded,
 } from '../../../../actions'
 
 describe('lists.byId', () => {
@@ -69,6 +70,25 @@ describe('lists.byId', () => {
         },
       }
       expect(newState).toEqual(expectedNewState)
+    })
+  })
+
+  describe('UPDATE_LIST_REQUEST_SUCCEEDED', () => {
+    it('updates the title of specified list', () => {
+      const updatedListTitle = 'updated second list'
+      const initialState = {
+        1: {
+          id: 1,
+          title: 'first list',
+        },
+        2: {
+          id: 2,
+          title: 'second list',
+        },
+      }
+      const action = updateListRequestSucceeded(2, { title: updatedListTitle })
+      const newState = byId(initialState, action)
+      expect(newState[2].title).toBe(updatedListTitle)
     })
   })
 })
