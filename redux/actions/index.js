@@ -333,7 +333,7 @@ export const updateList = (listId, updatedListDetails) => async (dispatch) => {
   dispatch(updateListRequestSent())
   try {
     dispatch(updateListRequestSucceeded(listId, updatedListDetails))
-    graphql({
+    await graphql({
       query: `
         mutation UpdateList($id: ID!, $listInput: ListInput!) {
           updateList(id: $id, listInput: $listInput) {
