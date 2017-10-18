@@ -9,6 +9,9 @@ import {
   fetchListsAndTasksRequestSent,
   fetchListsAndTasksRequestFailed,
   fetchListsAndTasksRequestSucceeded,
+  updateListRequestSent,
+  updateListRequestFailed,
+  updateListRequestSucceeded,
 } from '../../../../actions'
 import { expectLoadingStateToChangeTo } from '../../../../../services/test-helpers'
 
@@ -67,6 +70,24 @@ describe('lists.isLoading', () => {
   describe('DELETE_LIST_REQUEST_SUCCEDED', () => {
     it('indicates that the lists are no longer loading', () => {
       expectLoadingStateToChangeTo(false, deleteListRequestSucceeded, isLoading)
+    })
+  })
+
+  describe('UPDATE_LIST_REQUEST_SENT', () => {
+    it('indicates that the lists are loading', () => {
+      expectLoadingStateToChangeTo(true, updateListRequestSent, isLoading)
+    })
+  })
+
+  describe('UPDATE_LIST_REQUEST_FAILED', () => {
+    it('indicates that the lists are no longer loading', () => {
+      expectLoadingStateToChangeTo(false, updateListRequestFailed, isLoading)
+    })
+  })
+
+  describe('UPDATE_LIST_REQUEST_SENT', () => {
+    it('indicates that the lists are no longer loading', () => {
+      expectLoadingStateToChangeTo(false, updateListRequestSucceeded, isLoading)
     })
   })
 })

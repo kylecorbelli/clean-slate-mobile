@@ -22,11 +22,10 @@ const byId = (state = {}, action) => {
       return action.payload.tasksById
     case UPDATE_TASK_REQUEST_SUCCEEDED:
       const { taskId, updatedTaskDetails } = action.payload
-      const targetTask = cloneDeep(state[taskId])
       return {
         ...state,
         [taskId]: {
-          ...targetTask,
+          ...state[taskId],
           ...updatedTaskDetails,
         },
       }

@@ -19,6 +19,9 @@ import {
   UPDATE_TASK_REQUEST_FAILED,
   UPDATE_TASK_REQUEST_SENT,
   UPDATE_TASK_REQUEST_SUCCEEDED,
+  UPDATE_LIST_REQUEST_FAILED,
+  UPDATE_LIST_REQUEST_SENT,
+  UPDATE_LIST_REQUEST_SUCCEEDED,
 } from '../action-types'
 
 export const setHasSplashScreenBeenShown = (hasSplashScreenBeenShown) => ({
@@ -306,6 +309,46 @@ export const updateTask = (taskId, updatedTaskDetails) => async (dispatch) => {
   } catch (error) {
     // Will need to undo the optimistic update if the request fails:
     dispatch(updateTaskRequestFailed())
+    throw error
+  }
+}
+
+export const updateListRequestSent = () => ({
+  type: UPDATE_LIST_REQUEST_SENT,
+})
+
+export const updateListRequestFailed = () => ({
+  type: UPDATE_LIST_REQUEST_FAILED,
+})
+
+export const updateListRequestSucceeded = (listId, updatedListDetails) => ({
+  type: UPDATE_LIST_REQUEST_SUCCEEDED,
+  payload: {
+    listId,
+    updatedListDetails,
+  },
+})
+
+export const updateList = (listId, updatedListDetails) => async (dispatch) => {
+  dispatch(updateListRequestSent())
+  try {
+    dispatch(updateListRequestSucceeded(listId, updatedListDetails))
+    await graphql({
+      query: `
+        mutation UpdateList($id: ID!, $listInput: ListInput!) {
+          updateList(id: $id, listInput: $listInput) {
+            id
+          }
+        }
+      `,
+      variables: {
+        id: listId,
+        listInput: updatedListDetails,
+      },
+    })
+  } catch (error) {
+    // Will need to handle optimisic update if the request fails
+    dispatch(updateListRequestFailed())
     throw error
   }
 }

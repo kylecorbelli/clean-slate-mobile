@@ -23,6 +23,9 @@ import NewListScreenConnected from './containers/NewListScreenConnected'
 import NewTaskScreenConnected from './containers/NewTaskScreenConnected'
 import CameraScreen from './components/CameraScreen'
 import SavingPhotoModal from './components/SavingPhotoModal'
+import EditListButton from './components/EditListButton'
+import RenameListScreen from './containers/RenameListScreen'
+import ListNavbarTitle from './containers/ListNavbarTitle'
 
 const AuthRouter = TabNavigator({
   Register: {
@@ -60,9 +63,9 @@ const ListsRouter = StackNavigator({
   List: {
     screen: ListScreenConnected,
     navigationOptions: ({ navigation }) => ({
-      title: navigation.state.params.title,
+      title: <ListNavbarTitle navigation={navigation} />,
       headerLeft: <BackButton navigation={navigation} />,
-      headerRight: <NavbarAddButton onPress={() => navigation.navigate('NewTask', { listId: navigation.state.params.listId })} />,
+      headerRight: <EditListButton navigation={navigation} />,
     }),
   },
   Task: {
@@ -155,6 +158,9 @@ const Router = StackNavigator({
   NewTask: {
     screen: NewTaskScreenConnected,
   },
+  RenameList: {
+    screen: RenameListScreen,
+  },
   TakeNewPhotoModal: {
     screen: CameraRouter,
   }
@@ -170,4 +176,3 @@ const styles = StyleSheet.create({
 })
 
 export default Router
-
