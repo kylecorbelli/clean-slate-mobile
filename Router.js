@@ -57,7 +57,6 @@ const ListsRouter = StackNavigator({
     screen: ListsScreenConnected,
     navigationOptions: ({ navigation }) => ({
       title: 'Lists',
-      headerRight: <NavbarAddButton onPress={() => navigation.navigate('NewList')} />,
     }),
   },
   List: {

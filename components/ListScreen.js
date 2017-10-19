@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
+  ActionSheetIOS,
   Alert,
   Animated,
   RefreshControl,
@@ -9,7 +10,6 @@ import {
   Text,
   View,
 } from 'react-native'
-import Swipeout from 'react-native-swipeout'
 import { List, ListItem } from 'react-native-elements'
 import {
   blue3,
@@ -18,6 +18,7 @@ import {
   red1,
 } from '../styles/shared'
 import SwipeoutDeleteButton from './SwipeoutDeleteButton'
+import AddEntityButton from './AddEntityButton'
 
 export default class ListScreen extends Component {
   static propTypes = {
@@ -37,10 +38,6 @@ export default class ListScreen extends Component {
 
   taskSpinAnimations = {}
   taskDisappearAnimations = {}
-
-  state = {
-    taskInFocusId: 0,
-  }
 
   constructor (props) {
     super(props)
@@ -81,37 +78,31 @@ export default class ListScreen extends Component {
     }
   }
 
-  deleteTaskWithConfirmation = (task) => (event) => {
-    Alert.alert(
-      'Delete Task?',
-      `You are about to delete the task "${task.description}". This action cannot be undone. Do you still wish to continue?`,
-      [
-        {
-          text: 'Cancel',
-          onPress: () => {
-            this.setState({
-              taskInFocusId: 0,
-            })
-          }
-        },
-        {
-          text: 'Confirm',
-          onPress: () => {
-            this.setState({
-              taskInFocusId: 0,
-            })
-            Animated.timing(
-              this.taskDisappearAnimations[task.id],
-              {
-                toValue: 1,
-                duration: 500,
-              },
-            ).start(() => {
-              this.props.deleteTask(task.id)
-            })
-          }
-        }
-      ],
+  deleteTaskWithConfirmation = (task) => {
+    const actions = {
+      'Confirm Delete': () => {
+        Animated.timing(
+          this.taskDisappearAnimations[task.id],
+          {
+            toValue: 1,
+            duration: 500,
+          },
+        ).start(() => {
+          this.props.deleteTask(task.id)
+        })
+      },
+      'Cancel': () => {},
+    }
+    const actionNames = Object.keys(actions)
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: actionNames,
+        cancelButtonIndex: actionNames.length - 1,
+        destructiveButtonIndex: 0,
+        message: `You are about to delete the task "${task.description}". This action cannot be undone. Do you still wish to continue?`,
+        title: 'Delete Task?',
+      },
+      (indexSelected) => actions[actionNames[indexSelected]](),
     )
   }
 
@@ -128,26 +119,9 @@ export default class ListScreen extends Component {
     this.props.updateTask(task.id, { isDone: !task.isDone })
   }
 
-  swipeoutButtons = (task) => {
-    return [
-      {
-        autoClose: true,
-        backgroundColor: red1,
-        component: <SwipeoutDeleteButton />,
-        onPress: this.deleteTaskWithConfirmation(task),
-      },
-    ]
-  }
-
-  selectTask = task => event => {
+  selectTask = (task) => (event) => {
     const { navigation } = this.props
     navigation.navigate('Task', { task })
-  }
-
-  setTaskInFocusId = (taskInFocusId) => (event) => {
-    this.setState({
-      taskInFocusId,
-    })
   }
 
   taskIcon = (task) => ({
@@ -157,16 +131,40 @@ export default class ListScreen extends Component {
     type: 'font-awesome',
   })
 
-  taskContainerStyle = (task) => ({
-    backgroundColor: 'white',
-    borderWidth: 0,
-  })
-
   taskTitleStyle = (task) => ({
     color: task.isDone ? 'darkgray' : '#444',
     fontStyle: task.isDone ? 'italic' : 'normal',
     textDecorationLine: task.isDone ? 'line-through' : 'none',
   })
+
+  navigateToNewTaskScreen = () => {
+    const {
+      list,
+      navigation,
+    } = this.props
+    navigation.navigate('NewTask', { listId: list.id })
+  }
+
+  launchTaskActions = (task) => (event) => {
+    const actions = {
+      'Edit Task Details': () => {
+        this.props.navigation.navigate('Task', { task })
+      },
+      'Delete Task': () => {
+        this.deleteTaskWithConfirmation(task)
+      },
+      'Cancel': () => {},
+    }
+    const actionNames = Object.keys(actions)
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: actionNames,
+        cancelButtonIndex: actionNames.length - 1,
+        destructiveButtonIndex: 1,
+      },
+      (indexSelected) => actions[actionNames[indexSelected]](),
+    )
+  }
 
   render () {
     const {
@@ -176,63 +174,71 @@ export default class ListScreen extends Component {
       },
       listsAndTasksAreLoading,
     } = this.props
-    const { taskInFocusId } = this.state
     return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={listsAndTasksAreLoading}
-            onRefresh={fetchListsAndTasks}
-          />
-        }
-        style={styles.screen}
-      >
-        <List
-          containerStyle={styles.listContainer}
+      <View style={styles.screen}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={listsAndTasksAreLoading}
+              onRefresh={fetchListsAndTasks}
+            />
+          }
         >
-          {
-            tasks.map((task, index) => (
-              <Animated.View
-                key={index}
-                style={{
-                  height: this.taskDisappearAnimations[task.id].interpolate({
-                    inputRange: [ 0, 1 ],
-                    outputRange: [ 56, 0 ],
-                  }),
-                  opacity: this.taskDisappearAnimations[task.id].interpolate({
-                    inputRange: [ 0, 1 ],
-                    outputRange: [ 1, 0 ],
-                  }),
-                  transform: [
-                    {
-                      rotateX: this.taskSpinAnimations[task.id].interpolate({
-                        inputRange: [ 0, 360 ],
-                        outputRange: [ '0deg', '360deg' ],
-                      }),
-                    },
-                  ],
-                }}
-              >
-                <Swipeout
-                  backgroundColor="transparent"
-                  close={taskInFocusId !== task.id}
-                  onOpen={this.setTaskInFocusId(task.id)}
-                  right={this.swipeoutButtons(task)}
+          <List
+            containerStyle={styles.listContainer}
+          >
+            {
+              tasks.map((task, index) => (
+                <Animated.View
+                  key={index}
+                  style={{
+                    height: this.taskDisappearAnimations[task.id].interpolate({
+                      inputRange: [ 0, 1 ],
+                      outputRange: [ 65, 0 ],
+                    }),
+                    opacity: this.taskDisappearAnimations[task.id].interpolate({
+                      inputRange: [ 0, 1 ],
+                      outputRange: [ 1, 0 ],
+                    }),
+                    transform: [
+                      {
+                        rotateX: this.taskSpinAnimations[task.id].interpolate({
+                          inputRange: [ 0, 360 ],
+                          outputRange: [ '0deg', '360deg' ],
+                        }),
+                      },
+                      {
+                        translateX: this.taskDisappearAnimations[task.id].interpolate({
+                          inputRange: [ 0, 1 ],
+                          outputRange: [ 0 , 1000 ],
+                        }),
+                      },
+                      {
+                        translateY: this.taskDisappearAnimations[task.id].interpolate({
+                          inputRange: [ 0, 1 ],
+                          outputRange: [ 0 , -100 ],
+                        }),
+                      },
+                    ],
+                  }}
                 >
                   <ListItem
-                    containerStyle={this.taskContainerStyle(task)}
+                    containerStyle={styles.taskContainer}
                     leftIcon={this.taskIcon(task)}
-                    leftIconOnPress={this.toggleTaskIsDone(task)}
-                    onPress={this.selectTask(task)}
+                    // leftIconOnPress={this.toggleTaskIsDone(task)}
+                    onLongPress={this.launchTaskActions(task)}
+                    onPress={this.toggleTaskIsDone(task)}
+                    rightIcon={<View></View>}
                     title={task.description}
                     titleStyle={this.taskTitleStyle(task)}
                   />
-                </Swipeout>
-              </Animated.View>
-            ))
-          }
-        </List>
-      </ScrollView>
+                </Animated.View>
+              ))
+            }
+          </List>
+        </ScrollView>
+        <AddEntityButton onPress={this.navigateToNewTaskScreen} />
+      </View>
     )
   }
 }
@@ -244,5 +250,11 @@ const styles = StyleSheet.create({
   listContainer: {
     backgroundColor: 'transparent',
     marginTop: 0,
+  },
+  taskContainer: {
+    backgroundColor: 'white',
+    borderWidth: 0,
+    height: '100%',
+    justifyContent: 'center',
   },
 })

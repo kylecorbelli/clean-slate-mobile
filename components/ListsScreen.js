@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import {
+  ActionSheetIOS,
   Alert,
+  Animated,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -9,7 +11,6 @@ import {
   View,
 } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
-import Swipeout from 'react-native-swipeout'
 import {
   blue1,
   blue3,
@@ -19,6 +20,7 @@ import {
   yellow3,
 } from '../styles/shared'
 import SwipeoutDeleteButton from './SwipeoutDeleteButton'
+import AddEntityButton from './AddEntityButton'
 
 export default class ListsScreen extends Component {
   static propTypes = {
@@ -28,79 +30,90 @@ export default class ListsScreen extends Component {
     listsAndTasksAreLoading: PropTypes.bool.isRequired,
   }
 
-  state = {
-    listInFocusId: 0,
+  listDisappearAnimations = {}
+
+  constructor (props) {
+    super(props)
+    this.setListDisappearAnimations(props.lists)
   }
 
-  setListInFocusId = (listInFocusId) => (event) => {
-    this.setState({
-      listInFocusId,
-    })
+  componentWillUpdate = (nextProps) => {
+    const { lists } = nextProps
+    if (lists.length !== this.props.lists.length) {
+      this.setListDisappearAnimations(lists)
+    }
   }
 
-  selectList = list => event => {
-    const { navigation } = this.props
-    navigation.navigate('List', { listId: list.id, title: list.title })
-  }
-
-  deleteListWithConfirmation = (list) => (event) => {
-    const { deleteList } = this.props
-    Alert.alert(
-      'Delete List?',
-      `You are about to delete the list "${list.title}". This action cannot be undone. Do you still wish to continue?`,
-      [
-        {
-          text: 'Cancel',
-          onPress: () => {
-            this.setState({
-              listInFocusId: 0,
-            })
-          },
-        },
-        {
-          text: 'Confirm',
-          onPress: () => {
-            deleteList(list.id)
-          },
-        },
-      ],
+  setListDisappearAnimations = (lists) => {
+    this.listDisappearAnimations = lists.reduce(
+      (accumulatedListDisappearAnimations, currentList) => ({
+        ...accumulatedListDisappearAnimations,
+        [currentList.id]: new Animated.Value(0),
+      }),
+      {},
     )
   }
 
-  swipeoutButtons = (list) => {
-    return [
-      {
-        autoClose: true,
-        backgroundColor: red1,
-        component: <SwipeoutDeleteButton containerStyle={{ borderColor: 'lightgray', borderTopWidth: 1 }} />,
-        onPress: this.deleteListWithConfirmation(list),
+  selectList = (list) => (event) => {
+    this.props.navigation.navigate('List', { listId: list.id, title: list.title })
+  }
+
+  deleteListWithConfirmation = (list) => {
+    const actions = {
+      'Confirm Delete': () => {
+        Animated.timing(
+          this.listDisappearAnimations[list.id],
+          {
+            toValue: 1,
+            duration: 500,
+          },
+        ).start(() => {
+          this.props.deleteList(list.id)
+        })
       },
-    ]
+      'Cancel': () => {},
+    }
+    const actionNames = Object.keys(actions)
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: actionNames,
+        cancelButtonIndex: actionNames.length - 1,
+        destructiveButtonIndex: 0,
+        message: `You are about to delete list "${list.title}". This action cannot be undone. Do you still wish to continue?`,
+        title: 'Delete List?',
+      },
+      (indexSelected) => actions[actionNames[indexSelected]](),
+    )
+  }
+
+  launchListActions = (list) => (event) => {
+    const { navigation } = this.props
+    const actions = {
+      'Rename List': () => {
+        navigation.navigate('RenameList', { listId: list.id })
+      },
+      'Delete List': () => {
+        this.deleteListWithConfirmation(list)
+      },
+      'Cancel': () => {},
+    }
+    const actionNames = Object.keys(actions)
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: actionNames,
+        cancelButtonIndex: actionNames.length - 1,
+        destructiveButtonIndex: 1,
+      },
+      (indexSelected) => actions[actionNames[indexSelected]](),
+    )
   }
 
   componentDidMount = () => {
     this.props.fetchListsAndTasks()
   }
 
-  completedFractionCount = (list) => {
-    const { tasks } = list
-    return `${tasks.filter(task => task.isDone).length} / ${tasks.length}`
-  }
-
-  completedFractionContainerStyle = (list) => {
-    const { tasks } = list
-    const completedRatio = tasks.filter(task => task.isDone).length / tasks.length
-    let backgroundColor
-    if (completedRatio === 1) {
-      backgroundColor = blue1
-    } else if (completedRatio >= 0.67) {
-      backgroundColor = blue3
-    } else if (completedRatio >= 0.34) {
-      backgroundColor = yellow3
-    } else {
-      backgroundColor = red4
-    }
-    return { backgroundColor }
+  navigateToNewListScreen = () => {
+    this.props.navigation.navigate('NewList')
   }
 
   render () {
@@ -108,39 +121,62 @@ export default class ListsScreen extends Component {
       fetchListsAndTasks,
       lists,
       listsAndTasksAreLoading,
+      navigation,
     } = this.props
-    const { listInFocusId } = this.state
     return (
-      <ScrollView
-        refreshControl={
-          <RefreshControl
-            refreshing={listsAndTasksAreLoading}
-            onRefresh={fetchListsAndTasks}
-          />
-        }
-        style={styles.screen}
-      >
-        <List containerStyle={styles.listContainer}>
-          {
-            lists.map((list, index) => (
-              <Swipeout
-                backgroundColor="transparent"
-                close={list.id !== listInFocusId}
-                key={index}
-                onOpen={this.setListInFocusId(list.id)}
-                right={this.swipeoutButtons(list)}
-              >
-                <ListItem
-                  badge={{ value: this.completedFractionCount(list), containerStyle: this.completedFractionContainerStyle(list) }}
-                  containerStyle={styles.individualListContainer}
-                  onPress={this.selectList(list)}
-                  title={list.title}
-                />
-              </Swipeout>
-            ))
+      <View style={styles.screen}>
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={listsAndTasksAreLoading}
+              onRefresh={fetchListsAndTasks}
+            />
           }
-        </List>
-      </ScrollView>
+        >
+          <List containerStyle={styles.listContainer}>
+            {
+              lists.map((list, index) => (
+                <Animated.View
+                  key={index}
+                  style={{
+                    height: this.listDisappearAnimations[list.id].interpolate({
+                      inputRange: [ 0, 1 ],
+                      outputRange: [ 65, 0 ],
+                    }),
+                    justifyContent: 'center',
+                    opacity: this.listDisappearAnimations[list.id].interpolate({
+                      inputRange: [ 0, 1 ],
+                      outputRange: [ 1, 0 ],
+                    }),
+                    transform: [
+                      {
+                        translateX: this.listDisappearAnimations[list.id].interpolate({
+                          inputRange: [ 0, 1 ],
+                          outputRange: [ 0 , 1000 ],
+                        }),
+                      },
+                      {
+                        translateY: this.listDisappearAnimations[list.id].interpolate({
+                          inputRange: [ 0, 1 ],
+                          outputRange: [ 0 , -100 ],
+                        }),
+                      },
+                    ],
+                  }}
+                >
+                  <ListItem
+                    containerStyle={styles.individualListContainer}
+                    onLongPress={this.launchListActions(list)}
+                    onPress={this.selectList(list)}
+                    title={list.title}
+                  />
+                </Animated.View>
+              ))
+            }
+          </List>
+        </ScrollView>
+        <AddEntityButton onPress={this.navigateToNewListScreen} />
+      </View>
     )
   }
 }
@@ -152,13 +188,15 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     backgroundColor: 'transparent',
-    borderTopWidth: 0,
+    borderTopWidth: 1,
     marginTop: 0,
   },
   individualListContainer: {
     backgroundColor: 'white',
-    borderBottomWidth: 0,
+    borderBottomWidth: 1,
     borderColor: 'lightgray',
-    borderTopWidth: 1,
+    borderTopWidth: 0,
+    height: '100%',
+    justifyContent: 'center',
   },
 })

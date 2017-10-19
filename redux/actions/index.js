@@ -254,6 +254,7 @@ export const deleteListRequestSucceeded = (listId) => ({
 export const deleteList = (listId) => async (dispatch) => {
   dispatch(deleteListRequestSent())
   try {
+    dispatch(deleteListRequestSucceeded(listId))
     await graphql({
       query: `
         mutation DeleteList($id: ID!) {
@@ -266,8 +267,8 @@ export const deleteList = (listId) => async (dispatch) => {
         id: listId,
       },
     })
-    dispatch(deleteListRequestSucceeded(listId))
   } catch (error) {
+    // Have to undo the optimistic deletion if the request fails:
     dispatch(deleteListRequestFailed())
     throw error
   }

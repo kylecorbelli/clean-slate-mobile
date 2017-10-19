@@ -14,9 +14,6 @@ export default class EditListButton extends Component {
   launchActionSheet = () => {
     const { navigation } = this.props
     const actions = {
-      'Add Task': () => {
-        navigation.navigate('NewTask', { listId: navigation.state.params.listId })
-      },
       'Rename List': () => {
         navigation.navigate('RenameList', { listId: navigation.state.params.listId })
       },
@@ -28,6 +25,7 @@ export default class EditListButton extends Component {
     ActionSheetIOS.showActionSheetWithOptions({
       options: Object.keys(actions),
       cancelButtonIndex: Object.keys(actions).length - 1,
+      destructiveButtonIndex: 1,
     },
       (indexSelected) => actions[Object.keys(actions)[indexSelected]](),
     )
