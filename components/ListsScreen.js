@@ -19,7 +19,6 @@ import {
   red4,
   yellow3,
 } from '../styles/shared'
-import SwipeoutDeleteButton from './SwipeoutDeleteButton'
 import AddEntityButton from './AddEntityButton'
 
 export default class ListsScreen extends Component {

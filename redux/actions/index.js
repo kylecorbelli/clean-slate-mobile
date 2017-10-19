@@ -100,7 +100,6 @@ export const fetchListsAndTasks = () => async (dispatch) => {
     )
     dispatch(fetchListsAndTasksRequestSucceeded({ listsById, tasksById }))
   } catch (error) {
-    console.error(error)
     dispatch(fetchListsAndTasksRequestFailed())
     throw error
   }

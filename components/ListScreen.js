@@ -17,7 +17,6 @@ import {
   blue5,
   red1,
 } from '../styles/shared'
-import SwipeoutDeleteButton from './SwipeoutDeleteButton'
 import AddEntityButton from './AddEntityButton'
 
 export default class ListScreen extends Component {
@@ -99,8 +98,8 @@ export default class ListScreen extends Component {
         options: actionNames,
         cancelButtonIndex: actionNames.length - 1,
         destructiveButtonIndex: 0,
-        message: `You are about to delete the task "${task.description}". This action cannot be undone. Do you still wish to continue?`,
-        title: 'Delete Task?',
+        message: `You are about to delete the item "${task.description}". This action cannot be undone. Do you still wish to continue?`,
+        title: 'Delete Item?',
       },
       (indexSelected) => actions[actionNames[indexSelected]](),
     )
@@ -147,10 +146,10 @@ export default class ListScreen extends Component {
 
   launchTaskActions = (task) => (event) => {
     const actions = {
-      'Edit Task Details': () => {
+      'Edit Item Details': () => {
         this.props.navigation.navigate('Task', { task })
       },
-      'Delete Task': () => {
+      'Delete Item': () => {
         this.deleteTaskWithConfirmation(task)
       },
       'Cancel': () => {},
@@ -225,7 +224,6 @@ export default class ListScreen extends Component {
                   <ListItem
                     containerStyle={styles.taskContainer}
                     leftIcon={this.taskIcon(task)}
-                    // leftIconOnPress={this.toggleTaskIsDone(task)}
                     onLongPress={this.launchTaskActions(task)}
                     onPress={this.toggleTaskIsDone(task)}
                     rightIcon={<View></View>}

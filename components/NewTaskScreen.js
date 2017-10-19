@@ -65,14 +65,14 @@ export default class NewTaskScreen extends Component {
             autoFocus={true}
             onChangeText={this.updateFormField('description')}
             onSubmitEditing={this.createNewTask}
-            placeholder="New Task Description"
+            placeholder="New Item Description"
             placeholderTextColor="white"
             returnKeyType="done"
             style={textInput}
           />
         </View>
         <TouchableOpacity style={[ button, styles.newTaskButton ]} onPress={this.createNewTask}>
-          <Text style={ctaText}>Add New Task</Text>
+          <Text style={ctaText}>Add New Item</Text>
         </TouchableOpacity>
         <CloseModalButton navigation={this.props.navigation} />
       </CenteredKeyboardScreen>
