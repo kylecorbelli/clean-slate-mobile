@@ -102,6 +102,7 @@ export default class ListsScreen extends Component {
         options: actionNames,
         cancelButtonIndex: actionNames.length - 1,
         destructiveButtonIndex: 1,
+        title: list.title,
       },
       (indexSelected) => actions[actionNames[indexSelected]](),
     )
