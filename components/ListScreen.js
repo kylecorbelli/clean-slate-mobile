@@ -18,6 +18,7 @@ import {
   red1,
 } from '../styles/shared'
 import AddEntityButton from './AddEntityButton'
+import TaskProgress from './TaskProgress'
 
 export default class ListScreen extends Component {
   static propTypes = {
@@ -166,6 +167,8 @@ export default class ListScreen extends Component {
     )
   }
 
+  calculatePercentOfTasksCompleted = (tasks) => tasks.filter(task => task.isDone).length / tasks.length
+
   render () {
     const {
       fetchListsAndTasks,
@@ -174,8 +177,10 @@ export default class ListScreen extends Component {
       },
       listsAndTasksAreLoading,
     } = this.props
+    const percentOfTasksCompleted = this.calculatePercentOfTasksCompleted(tasks)
     return (
       <View style={styles.screen}>
+        <TaskProgress progress={percentOfTasksCompleted} />
         <ScrollView
           refreshControl={
             <RefreshControl
