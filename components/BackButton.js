@@ -5,6 +5,7 @@ import { Icon } from 'react-native-elements'
 
 export default class BackButton extends Component {
   static propTypes = {
+    color: PropTypes.string,
     navigation: PropTypes.shape({
       goBack: PropTypes.func.isRequired,
     }).isRequired,
@@ -17,6 +18,7 @@ export default class BackButton extends Component {
   render () {
     return (
       <Icon
+        color={this.props.color}
         onPress={this.navigateBack}
         name='md-arrow-round-back'
         type='ionicon'

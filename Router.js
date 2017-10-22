@@ -11,7 +11,7 @@ import {
 
 import ListsScreenConnected from './containers/ListsScreenConnected'
 import ListScreenConnected from './containers/ListScreenConnected'
-import TaskScreen from './components/TaskScreen'
+import TaskScreen from './containers/TaskScreen'
 import MeScreenConnected from './containers/MeScreenConnected'
 import RegisterScreenConnected from './containers/RegisterScreenConnected'
 import SearchScreen from './components/SearchScreen'
@@ -70,7 +70,6 @@ const ListsRouter = StackNavigator({
   Task: {
     screen: TaskScreen,
     navigationOptions: ({ navigation }) => ({
-      title: navigation.state.params.task.description,
       headerLeft: <BackButton navigation={navigation} />,
     }),
   },

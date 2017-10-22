@@ -9,6 +9,7 @@ import {
 import {
   blue2,
   blue4,
+  green,
   yellow3,
   red4,
 } from '../styles/shared'
@@ -60,7 +61,7 @@ export default class TaskProgress extends Component {
 
   getBarColor = (progress) => {
     if (progress === 1) {		
-      return '#61BD4F'		
+      return green		
     } else if (progress >= 0.67) {		
       return blue4	
     } else if (progress >= 0.34) {		

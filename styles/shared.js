@@ -16,6 +16,8 @@ export const red3 = '#FF8167'
 export const red4 = '#FFA794'
 export const red5 = '#FFD9D1'
 
+export const green = '#61BD4F'
+
 export const form = {
   width: '100%',
 }

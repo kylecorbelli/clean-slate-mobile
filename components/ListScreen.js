@@ -15,6 +15,7 @@ import {
   blue3,
   blue4,
   blue5,
+  green,
   red1,
 } from '../styles/shared'
 import AddEntityButton from './AddEntityButton'
@@ -99,7 +100,7 @@ export default class ListScreen extends Component {
         options: actionNames,
         cancelButtonIndex: actionNames.length - 1,
         destructiveButtonIndex: 0,
-        message: `You are about to delete the item "${task.description}". This action cannot be undone. Do you still wish to continue?`,
+        message: `You are about to delete the item "${task.name}". This action cannot be undone. Do you still wish to continue?`,
         title: 'Delete Item?',
       },
       (indexSelected) => actions[actionNames[indexSelected]](),
@@ -120,14 +121,20 @@ export default class ListScreen extends Component {
   }
 
   selectTask = (task) => (event) => {
-    const { navigation } = this.props
-    navigation.navigate('Task', { task })
+    this.props.navigation.navigate('Task', { taskId: task.id })
   }
 
-  taskIcon = (task) => ({
-    color: blue3,
+  taskIcon = (task, percentOfTasksCompleted) => ({
+    color: percentOfTasksCompleted === 1 ? green : blue3,
     name: task.isDone ? 'check-circle' : 'circle-thin',
     size: 35,
+    style: {
+      paddingBottom: 12,
+      paddingLeft: 10,
+      paddingRight: 10,
+      paddingTop: 13,
+      width: 50,
+    },
     type: 'font-awesome',
   })
 
@@ -147,9 +154,6 @@ export default class ListScreen extends Component {
 
   launchTaskActions = (task) => (event) => {
     const actions = {
-      'Edit Item Details': () => {
-        this.props.navigation.navigate('Task', { task })
-      },
       'Delete Item': () => {
         this.deleteTaskWithConfirmation(task)
       },
@@ -160,14 +164,18 @@ export default class ListScreen extends Component {
       {
         options: actionNames,
         cancelButtonIndex: actionNames.length - 1,
-        destructiveButtonIndex: 1,
-        title: task.description,
+        destructiveButtonIndex: 0,
+        title: task.name,
       },
       (indexSelected) => actions[actionNames[indexSelected]](),
     )
   }
 
-  calculatePercentOfTasksCompleted = (tasks) => tasks.filter(task => task.isDone).length / tasks.length
+  calculatePercentOfTasksCompleted = (tasks) => {
+    return tasks.length === 0
+      ? 0
+      : tasks.filter(task => task.isDone).length / tasks.length
+  }
 
   render () {
     const {
@@ -229,11 +237,11 @@ export default class ListScreen extends Component {
                 >
                   <ListItem
                     containerStyle={styles.taskContainer}
-                    leftIcon={this.taskIcon(task)}
+                    leftIcon={this.taskIcon(task, percentOfTasksCompleted)}
+                    leftIconOnPress={this.toggleTaskIsDone(task)}
                     onLongPress={this.launchTaskActions(task)}
-                    onPress={this.toggleTaskIsDone(task)}
-                    rightIcon={<View></View>}
-                    title={task.description}
+                    onPress={this.selectTask(task)}
+                    title={task.name}
                     titleStyle={this.taskTitleStyle(task)}
                   />
                 </Animated.View>

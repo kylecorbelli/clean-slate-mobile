@@ -62,6 +62,7 @@ export const fetchListsAndTasks = () => async (dispatch) => {
           }
           tasks {
             id
+            name
             description
             isDone
             list {
@@ -163,15 +164,16 @@ export const createTaskRequestSucceeded = (newTask) => ({
   },
 })
 
-export const createTask = (description, listId) => async (dispatch) => {
+export const createTask = (name, listId) => async (dispatch) => {
   dispatch(createTaskRequestSent())
   try {
     const response = await graphql({
       query: `
-        mutation CreateTask($listId: ID!, $description: String!) {
-          createTask(listId: $listId, description: $description) {
+        mutation CreateTask($listId: ID!, $name: String!) {
+          createTask(listId: $listId, name: $name) {
             id
             description
+            name
             isDone
             list {
               id
@@ -180,7 +182,7 @@ export const createTask = (description, listId) => async (dispatch) => {
         }
       `,
       variables: {
-        description,
+        name,
         listId,
       },
     })
