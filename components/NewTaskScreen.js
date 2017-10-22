@@ -36,7 +36,7 @@ export default class NewTaskScreen extends Component {
   }
 
   state = {
-    description: '',
+    name: '',
   }
 
   updateFormField = fieldName => text => {
@@ -44,11 +44,11 @@ export default class NewTaskScreen extends Component {
   }
 
   createNewTask = async () => {
-    const { description } = this.state
+    const { name } = this.state
     const { createTask, navigation } = this.props
     const { listId } = navigation.state.params
     Keyboard.dismiss()
-    await createTask(description, listId)
+    await createTask(name, listId)
     navigation.goBack()
   }
 
@@ -63,7 +63,7 @@ export default class NewTaskScreen extends Component {
         <View style={[ form, styles.newTaskForm ]}>
           <TextInput
             autoFocus={true}
-            onChangeText={this.updateFormField('description')}
+            onChangeText={this.updateFormField('name')}
             onSubmitEditing={this.createNewTask}
             placeholder="New Item Description"
             placeholderTextColor="white"

@@ -13,7 +13,7 @@ describe('lists.byId', () => {
       const tasksById = {
         1: {
           id: 1,
-          description: 'test this reducer',
+          name: 'test this reducer',
           isDone: true,
         }
       }
@@ -29,12 +29,12 @@ describe('lists.byId', () => {
       const initialState = {
         1: {
           id: 1,
-          description: 'first task',
+          name: 'first task',
         },
       }
       const newTask = {
         id: 2,
-        description: 'a new task',
+        name: 'a new task',
       }
       const action = createTaskRequestSucceeded(newTask)
       const expectedNewState = {
@@ -51,11 +51,11 @@ describe('lists.byId', () => {
       const initialState = {
         1: {
           id: 1,
-          description: 'first task',
+          name: 'first task',
         },
         2: {
           id: 2,
-          description: 'a new task',
+          name: 'a new task',
         },
       }
       const action = deleteTaskRequestSucceeded(2)
@@ -63,7 +63,7 @@ describe('lists.byId', () => {
       const expectedNewState = {
         1: {
           id: 1,
-          description: 'first task',
+          name: 'first task',
         },
       }
       expect(newState).toEqual(expectedNewState)
@@ -75,26 +75,26 @@ describe('lists.byId', () => {
       const initialState = {
         1: {
           id: 1,
-          description: 'First Task',
+          name: 'First Task',
           isDone: false,
         },
         2: {
           id: 2,
-          description: 'Second Task',
+          name: 'Second Task',
           isDone: false,
         },
       }
-      const action = updateTaskRequestSucceeded(1, { description: 'Updated First Task' })
+      const action = updateTaskRequestSucceeded(1, { name: 'Updated First Task' })
       const newState = byId(initialState, action)
       const expectedNewState = {
         1: {
           id: 1,
-          description: 'Updated First Task',
+          name: 'Updated First Task',
           isDone: false,
         },
         2: {
           id: 2,
-          description: 'Second Task',
+          name: 'Second Task',
           isDone: false,
         },
       }
