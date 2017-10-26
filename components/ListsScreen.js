@@ -175,7 +175,13 @@ export default class ListsScreen extends Component {
             }
           </List>
         </ScrollView>
-        <AddEntityButton onPress={this.navigateToNewListScreen} />
+        <AddEntityButton
+          backgroundColor={blue1}
+          color="white"
+          iconName="plus"
+          iconType="font-awesome"
+          onPress={this.navigateToNewListScreen}
+        />
       </View>
     )
   }

@@ -17,6 +17,7 @@ export const red4 = '#FFA794'
 export const red5 = '#FFD9D1'
 
 export const green = '#61BD4F'
+export const darkGray = '#444'
 
 export const form = {
   width: '100%',

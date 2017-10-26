@@ -1,9 +1,9 @@
 import { AsyncStorage } from 'react-native'
 import { generateAuthActions } from 'redux-token-auth'
+import { baseUrl } from './constants'
 
 const config = {
-  // authUrl: 'http://localhost:3000/auth',
-  authUrl: 'https://blueberry-pudding-19740.herokuapp.com/auth',
+  authUrl: `${baseUrl}/auth`,
   storage: AsyncStorage,
   userAttributes: {
     firstName: 'name',

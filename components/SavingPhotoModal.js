@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   ActivityIndicator,
   StyleSheet,
@@ -9,8 +10,13 @@ import axios from 'axios'
 import RNFS from 'react-native-fs'
 import { Icon } from 'react-native-elements'
 import { blue3 } from '../styles/shared'
+import { graphql } from '../services/graphql'
 
 export default class SavingPhotoModal extends Component {
+  static propTypes = {
+    addImage: PropTypes.func.isRequired,
+  }
+  
   state = {
     photoHasBeenSaved: false,
   }
@@ -20,21 +26,14 @@ export default class SavingPhotoModal extends Component {
   }
 
   savePhoto = async () => {
-    const { navigation } = this.props
-    const { photoPath } = navigation.state.params
+    const { navigation, addImage } = this.props
+    const { photoPath, taskId } = navigation.state.params
     const base64Image = await RNFS.readFile(photoPath, 'base64')
-    // We'll probably want to handle all this in a Thunk action and also send the data to our backend:
-    const response = await axios({
-      method: 'POST',
-      url: 'https://api.cloudinary.com/v1_1/dk1ym28wm/image/upload',
-      data: {
-        file: `data:image/png;base64,${base64Image}`,
-        upload_preset: 'nuxgzvk1',
-      },
-    })
+    await addImage(taskId, photoPath, base64Image)
     this.setState({
       photoHasBeenSaved: true,
     })
+    RNFS.unlink(photoPath)
     setTimeout(navigation.goBack, 1500)
   }
 

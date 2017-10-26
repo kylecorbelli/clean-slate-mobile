@@ -11,6 +11,10 @@ const initialState = {
     },
   },
   entities: {
+    images: {
+      byId: {},
+      isLoading: false,
+    },
     lists: {
       byId: {},
       isLoading: false,

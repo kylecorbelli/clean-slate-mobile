@@ -14,6 +14,7 @@
 		"react-native-camera": "^0.10.0",
 		"react-native-elements": "^0.17.0",
 		"react-native-fs": "^2.5.2",
+		"react-native-swiper": "^1.5.13",
 		"react-native-vector-icons": "^4.4.0",
 		"react-navigation": "^1.0.0-beta.11",
 		"react-redux": "^5.0.6",
@@ -31,7 +32,7 @@
 	"jest": {
 		"preset": "react-native",
 		"transformIgnorePatterns": [
-			"node_modules/(?!(react-native|react-native-elements|react-native-vector-icons|react-native-tab-navigator|react-navigation|react-native-swipeout|react-native-camera)/)"
+			"node_modules/(?!(react-native|react-native-elements|react-native-vector-icons|react-native-tab-navigator|react-navigation|react-native-swipeout|react-native-camera|react-native-fs|react-native-swiper)/)"
 		]
 	}
 }
