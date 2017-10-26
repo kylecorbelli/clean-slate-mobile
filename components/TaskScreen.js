@@ -9,7 +9,6 @@ import {
   View,
   Text,
   TextInput,
-  TouchableHighlight,
   TouchableWithoutFeedback,
 } from 'react-native'
 import { Icon } from 'react-native-elements'
@@ -157,7 +156,7 @@ export default class TaskScreen extends Component {
                     <TouchableWithoutFeedback key={index} onLongPress={this.launchDeletePhotoActionSheet(image.id)}>
                       <Image
                         source={{ uri: image.url }}
-                        style={{ height: '100%' }}
+                        style={styles.image}
                       />
                     </TouchableWithoutFeedback>
                   ))
@@ -232,8 +231,9 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   imageSwiper: {
-    // borderColor: 'red',
-    // borderWidth: 1,
     height: 500,
-  }
+  },
+  image: {
+    height: '100%',
+  },
 })

@@ -92,8 +92,6 @@ export const fetchListsAndTasks = () => async (dispatch) => {
         }
       `,
     })
-    console.log('response')
-    console.log(response)
     const listsById = response.data.data.lists.reduce(
       (cumulativeLists, currentList) => {
         const listWithTaskIds = {
@@ -528,8 +526,6 @@ export const deleteImage = (imageId) => async (dispatch) => {
         id: imageId,
       },
     })
-    console.log('response')
-    console.log(response)
     dispatch(deleteImageRequestSucceeded(temporaryImageCopyId))
   } catch (error) {
     dispatch(deleteImageRequestFailed(imageId, temporaryImageCopyId))

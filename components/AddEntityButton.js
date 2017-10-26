@@ -14,9 +14,7 @@ const AddEntityButton = ({ backgroundColor, color, iconName, iconType, onPress }
       <TouchableOpacity
         style={[
           styles.container,
-          {
-            backgroundColor,
-          },
+          { backgroundColor },
         ]}
         onPress={onPress}
       >
