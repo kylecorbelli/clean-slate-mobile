@@ -1,10 +1,10 @@
 import axios from 'axios'
+import { baseUrl } from '../constants'
 
 export const graphql = ({ query, variables }) => {
   return axios({
     method: 'POST',
-    // url: 'http://localhost:3000/graphql',
-    url: 'https://blueberry-pudding-19740.herokuapp.com/graphql',
+    url: `${baseUrl}/graphql`,
     data: {
       query,
       variables,

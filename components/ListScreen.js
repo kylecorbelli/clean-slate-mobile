@@ -12,9 +12,11 @@ import {
 } from 'react-native'
 import { List, ListItem } from 'react-native-elements'
 import {
+  blue1,
   blue3,
   blue4,
   blue5,
+  darkGray,
   green,
   red1,
 } from '../styles/shared'
@@ -139,7 +141,7 @@ export default class ListScreen extends Component {
   })
 
   taskTitleStyle = (task) => ({
-    color: task.isDone ? 'darkgray' : '#444',
+    color: task.isDone ? 'darkgray' : darkGray,
     fontStyle: task.isDone ? 'italic' : 'normal',
     textDecorationLine: task.isDone ? 'line-through' : 'none',
   })
@@ -249,7 +251,13 @@ export default class ListScreen extends Component {
             }
           </List>
         </ScrollView>
-        <AddEntityButton onPress={this.navigateToNewTaskScreen} />
+        <AddEntityButton
+          backgroundColor={blue1}
+          color="white"
+          iconName="plus"
+          iconType="font-awesome"
+          onPress={this.navigateToNewTaskScreen}
+        />
       </View>
     )
   }

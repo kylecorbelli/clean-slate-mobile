@@ -9,6 +9,8 @@ import {
   View,
   Text,
   TextInput,
+  TouchableHighlight,
+  TouchableWithoutFeedback,
 } from 'react-native'
 import { Icon } from 'react-native-elements'
 import debounce from 'lodash/debounce'
@@ -16,7 +18,10 @@ import { defaultHitSlop } from '../constants'
 import {
   blue1,
   blue5,
+  darkGray,
 } from '../styles/shared'
+import Swiper from 'react-native-swiper'
+import AddEntityButton from './AddEntityButton'
 
 export default class TaskScreen extends Component {
   static propTypes = {
@@ -28,6 +33,7 @@ export default class TaskScreen extends Component {
       description: PropTypes.string,
     }).isRequired,
     updateTask: PropTypes.func.isRequired,
+    deleteImage: PropTypes.func.isRequired,
   }
 
   constructor (props) {
@@ -50,10 +56,11 @@ export default class TaskScreen extends Component {
     )
   }
 
-  launchActionSheet = () => {
+  launchAddPhotoActionSheet = () => {
+    const { task } = this.props
     const actions = {
       'Take a Photo with Your Camera': () => {
-        this.props.navigation.navigate('TakeNewPhotoModal')
+        this.props.navigation.navigate('TakeNewPhotoModal', { taskId: task.id })
       },
       'Use an Existing Photo': () => {},
       'Cancel': () => {},
@@ -65,7 +72,42 @@ export default class TaskScreen extends Component {
         cancelButtonIndex: actionNames.length - 1,
         title: 'Add a New Photo'
       },
-      (indexSelected) => actions[actionNames[indexSelected]]()
+      (indexSelected) => actions[actionNames[indexSelected]](),
+    )
+  }
+
+  launchDeletePhotoActionSheet = (imageId) => (event) => {
+    const actions = {
+      'Delete Photo': () => this.launchConfirmDeletePhotoActionSheet(imageId),
+      'Cancel': () => {},
+    }
+    const actionNames = Object.keys(actions)
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: actionNames,
+        cancelButtonIndex: actionNames.length - 1,
+        destructiveButtonIndex: 0,
+      },
+      (indexSelected) => actions[actionNames[indexSelected]](),
+    )
+  }
+
+  launchConfirmDeletePhotoActionSheet = (imageId) => {
+    const { deleteImage } = this.props
+    const actions = {
+      'Confirm Delete': () => deleteImage(imageId),
+      'Cancel': () => {},
+    }
+    const actionNames = Object.keys(actions)
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: actionNames,
+        cancelButtonIndex: actionNames.length - 1,
+        destructiveButtonIndex: 0,
+        title: 'Deleting Photo',
+        message: 'This action cannot be undone. Would you like to continue?',
+      },
+      (indexSelected) => actions[actionNames[indexSelected]](),
     )
   }
 
@@ -76,7 +118,7 @@ export default class TaskScreen extends Component {
 
   render () {
     const { taskName, taskDescription } = this.state
-    const { list: { title } } = this.props
+    const { list: { title }, images } = this.props
     return (
       <View style={styles.screen}>
         <ScrollView contentContainerStyle={styles.scrollView}>
@@ -107,15 +149,30 @@ export default class TaskScreen extends Component {
             />
           </View>
           <View style={styles.photoSection}>
-            <Text style={styles.photoHeadline}>Photos</Text>
-            <TouchableOpacity
-              hitSlop={defaultHitSlop}
-              onPress={this.launchActionSheet}
-            >
-              <Icon name="add-a-photo" size={60} />
-            </TouchableOpacity>
+            {
+              Boolean(images.length) &&
+              <Swiper showsPagination={false} style={styles.imageSwiper} loop={false} removeClippedSubviews={false}>
+                {
+                  images.map((image, index) => (
+                    <TouchableWithoutFeedback key={index} onLongPress={this.launchDeletePhotoActionSheet(image.id)}>
+                      <Image
+                        source={{ uri: image.url }}
+                        style={{ height: '100%' }}
+                      />
+                    </TouchableWithoutFeedback>
+                  ))
+                }
+              </Swiper>
+            }
           </View>
         </ScrollView>
+        <AddEntityButton
+          backgroundColor={darkGray}
+          color="white"
+          iconName="add-a-photo"
+          iconType="material"
+          onPress={this.launchAddPhotoActionSheet}
+        />
       </View>
     )
   }
@@ -129,7 +186,6 @@ const styles = StyleSheet.create({
     minHeight: '100%',
   },
   scrollView: {
-    height: '100%',
     width: '100%',
   },
   taskNameSection: {
@@ -175,8 +231,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
   },
-  photoHeadline: {
-    fontSize: 18,
-    width: '100%',
-  },
+  imageSwiper: {
+    // borderColor: 'red',
+    // borderWidth: 1,
+    height: 500,
+  }
 })

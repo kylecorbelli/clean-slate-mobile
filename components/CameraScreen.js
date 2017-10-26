@@ -51,7 +51,8 @@ export default class CameraScreen extends Component {
 
   initiateSavingPhoto = () => {
     const { photoPath } = this.state
-    this.props.navigation.navigate('SavingPhotoModal', { photoPath })
+    const { taskId } = this.props.navigation.state.params
+    this.props.navigation.navigate('SavingPhotoModal', { photoPath, taskId })
     this.closePhotoPreview()
   }
 

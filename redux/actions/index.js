@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { graphql } from '../../services/graphql'
 import {
   CREATE_LIST_REQUEST_FAILED,
@@ -22,6 +23,17 @@ import {
   UPDATE_LIST_REQUEST_FAILED,
   UPDATE_LIST_REQUEST_SENT,
   UPDATE_LIST_REQUEST_SUCCEEDED,
+  OPTIMISTICALLY_ADD_IMAGE,
+  CLOUDINARY_REQUEST_SENT,
+  CLOUDINARY_REQUEST_FAILED,
+  CLOUDINARY_REQUEST_SUCCEEDED,
+  CREATE_IMAGE_REQUEST_SENT,
+  CREATE_IMAGE_REQUEST_FAILED,
+  CREATE_IMAGE_REQUEST_SUCCEEDED,
+  OPTIMISTICALLY_DELETE_IMAGE,
+  DELETE_IMAGE_REQUEST_FAILED,
+  DELETE_IMAGE_REQUEST_SENT,
+  DELETE_IMAGE_REQUEST_SUCCEEDED,
 } from '../action-types'
 
 export const setHasSplashScreenBeenShown = (hasSplashScreenBeenShown) => ({
@@ -39,9 +51,10 @@ export const fetchListsAndTasksRequestFailed = () => ({
   type: FETCH_LISTS_AND_TASKS_REQUEST_FAILED,
 })
 
-export const fetchListsAndTasksRequestSucceeded = ({ listsById, tasksById }) => ({
+export const fetchListsAndTasksRequestSucceeded = ({ listsById, tasksById, imagesById }) => ({
   type: FETCH_LISTS_AND_TASKS_REQUEST_SUCCEEDED,
   payload: {
+    imagesById,
     listsById,
     tasksById,
   },
@@ -69,9 +82,18 @@ export const fetchListsAndTasks = () => async (dispatch) => {
               id
             }
           }
+          images {
+            id
+            url
+            task {
+              id
+            }
+          }
         }
       `,
     })
+    console.log('response')
+    console.log(response)
     const listsById = response.data.data.lists.reduce(
       (cumulativeLists, currentList) => {
         const listWithTaskIds = {
@@ -99,7 +121,20 @@ export const fetchListsAndTasks = () => async (dispatch) => {
       },
       {},
     )
-    dispatch(fetchListsAndTasksRequestSucceeded({ listsById, tasksById }))
+    const imagesById = response.data.data.images.reduce(
+      (cumulativeImages, currentImage) => {
+        const { task, ...currentImageWithoutTask } = currentImage
+        return {
+          ...cumulativeImages,
+          [currentImageWithoutTask.id]: {
+            ...currentImageWithoutTask,
+            taskId: task.id,
+          },
+        }
+      },
+      {},
+    )
+    dispatch(fetchListsAndTasksRequestSucceeded({ listsById, tasksById, imagesById }))
   } catch (error) {
     dispatch(fetchListsAndTasksRequestFailed())
     throw error
@@ -352,5 +387,151 @@ export const updateList = (listId, updatedListDetails) => async (dispatch) => {
     // Will need to handle optimisic update if the request fails
     dispatch(updateListRequestFailed())
     throw error
+  }
+}
+
+export const optimisticallyAddImage = (temporaryImage) => ({
+  type: OPTIMISTICALLY_ADD_IMAGE,
+  payload: {
+    temporaryImage,
+  },
+})
+
+export const cloudinaryRequestSent = () => ({
+  type: CLOUDINARY_REQUEST_SENT,
+})
+
+export const cloudinaryRequestFailed = (temporaryImageId) => ({
+  type: CLOUDINARY_REQUEST_FAILED,
+  payload: {
+    temporaryImageId,
+  },
+})
+
+export const cloudinaryRequestSucceeded = () => ({
+  type: CLOUDINARY_REQUEST_SUCCEEDED,
+})
+
+export const createImageRequestSent = () => ({
+  type: CREATE_IMAGE_REQUEST_SENT,
+})
+
+export const createImageRequestFailed = (temporaryImageId) => ({
+  type: CREATE_IMAGE_REQUEST_FAILED,
+  payload: {
+    temporaryImageId,
+  },
+})
+
+export const createImageRequestSucceeded = (temporaryImageId, permanentImage) => ({
+  type: CREATE_IMAGE_REQUEST_SUCCEEDED,
+  payload: {
+    temporaryImageId,
+    permanentImage,
+  },
+})
+
+export const addImage = (taskId, photoPath, base64Image) => async (dispatch) => {
+  const temporaryImageId = `temp-${new Date().valueOf()}`
+  const temporaryImage = {
+    id: temporaryImageId,
+    url: photoPath,
+    taskId,
+  }
+  dispatch(optimisticallyAddImage(temporaryImage))
+  dispatch(cloudinaryRequestSent())
+  let cloudinaryResponse
+  try {
+    cloudinaryResponse = await axios({
+      method: 'POST',
+      url: 'https://api.cloudinary.com/v1_1/dk1ym28wm/image/upload',
+      data: {
+        file: `data:image/png;base64,${base64Image}`,
+        upload_preset: 'nuxgzvk1',
+      },
+    })
+    dispatch(cloudinaryRequestSucceeded())
+  } catch (error) {
+    dispatch(cloudinaryRequestFailed(temporaryImageId))
+    throw error
+  }
+  const imageUrl = cloudinaryResponse.data.secure_url
+  try {
+    dispatch(createImageRequestSent())
+    const graphqlResponse = await graphql({
+      query: `
+        mutation CreateImage($taskId: ID!, $url: String!) {
+          createImage(taskId: $taskId, url: $url) {
+            id
+            url
+            task {
+              id
+            }
+          }
+        }
+      `,
+      variables: {
+        taskId,
+        url: imageUrl,
+      },
+    })
+    const { task, ...permanentImage } = graphqlResponse.data.data.createImage
+    permanentImage.taskId = task.id
+    dispatch(createImageRequestSucceeded(temporaryImageId, permanentImage))
+  } catch (error) {
+    dispatch(createImageRequestFailed(temporaryImageId))
+    throw error
+  }
+}
+
+export const optimisticallyDeleteImage = (imageId, temporaryImageCopyId) => ({
+  type: OPTIMISTICALLY_DELETE_IMAGE,
+  payload: {
+    imageId,
+    temporaryImageCopyId,
+  },
+})
+
+export const deleteImageRequestSent = () => ({
+  type: DELETE_IMAGE_REQUEST_SENT,
+})
+
+export const deleteImageRequestFailed = (imageId, temporaryImageCopyId) => ({
+  type: DELETE_IMAGE_REQUEST_FAILED,
+  payload: {
+    imageId,
+    temporaryImageCopyId,
+  },
+})
+
+export const deleteImageRequestSucceeded = (temporaryImageCopyId) => ({
+  type: DELETE_IMAGE_REQUEST_SUCCEEDED,
+  payload: {
+    temporaryImageCopyId,
+  },
+})
+
+export const deleteImage = (imageId) => async (dispatch) => {
+  const temporaryImageCopyId = `temp-${new Date().valueOf()}`
+  dispatch(optimisticallyDeleteImage(imageId, temporaryImageCopyId))
+  try {
+    dispatch(deleteImageRequestSent())
+    const response = await graphql({
+      query: `
+        mutation DeleteImage($id: ID!) {
+          deleteImage(id: $id) {
+            id
+          }
+        }
+      `,
+      variables: {
+        id: imageId,
+      },
+    })
+    console.log('response')
+    console.log(response)
+    dispatch(deleteImageRequestSucceeded(temporaryImageCopyId))
+  } catch (error) {
+    dispatch(deleteImageRequestFailed(imageId, temporaryImageCopyId))
   }
 }

@@ -8,15 +8,22 @@ import {
 import { Icon } from 'react-native-elements'
 import { blue1 } from '../styles/shared'
 
-const AddEntityButton = ({ isPressable, onPress, style }) => {
+const AddEntityButton = ({ backgroundColor, color, iconName, iconType, onPress }) => {
   return (
     <Animated.View>
-      <TouchableOpacity style={styles.container} onPress={onPress}>
+      <TouchableOpacity
+        style={[
+          styles.container,
+          {
+            backgroundColor,
+          },
+        ]}
+        onPress={onPress}
+      >
         <Icon
-          color="white"
-          name="plus"
-          
-          type="font-awesome"
+          color={color}
+          name={iconName}
+          type={iconType}
         />
       </TouchableOpacity>
     </Animated.View>
@@ -24,8 +31,11 @@ const AddEntityButton = ({ isPressable, onPress, style }) => {
 }
 
 AddEntityButton.propTypes = {
+  backgroundColor: PropTypes.string.isRequired,
+  color: PropTypes.string.isRequired,
+  iconName: PropTypes.string.isRequired,
+  iconType: PropTypes.string.isRequired,
   onPress: PropTypes.func.isRequired,
-  style: PropTypes.object,
 }
 
 const styles = StyleSheet.create({
