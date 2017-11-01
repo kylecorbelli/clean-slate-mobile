@@ -1,5 +1,7 @@
-export const randomListCompletionMessage = () => {
-  const messages = [
+// @flow
+
+export const randomListCompletionMessage = (): string => {
+  const messages: Array<string> = [
     'Nailed It!',
     'Gettin’ things DONE!',
     'Like a boss!',
@@ -23,6 +25,6 @@ export const randomListCompletionMessage = () => {
     'Can’t touch this!',
     'This is how we do it!',
   ]
-  const randomIndex = Math.floor(Math.random() * messages.length)
+  const randomIndex: number = Math.floor(Math.random() * messages.length)
   return messages[randomIndex]
 }
